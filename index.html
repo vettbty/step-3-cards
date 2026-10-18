@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=5">
+<meta name="theme-color" content="#070c17">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Step 3 Cards">
+<title>Step 3 Cards</title>
+<style>
+:root{--bg:#070c17;--c:#111c31;--c2:#17243d;--l:#22304d;--t:#e9eefb;--d:#8b9cc0;--d2:#66779a;
+--tl:#2dd4bf;--in:#7c83ff;--w:#fbbf24;--b:#fb7185;--g:#34d399;--sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--t);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+padding-bottom:calc(70px + var(--sb));overscroll-behavior-y:none}
+button,input,select{font:inherit;color:var(--t)}button{touch-action:manipulation;cursor:pointer}
+h1{font-size:19px;margin:0 0 2px;letter-spacing:-.2px}h2{font-size:14.5px;margin:0 0 8px}
+h3{font-size:10.5px;margin:0 0 6px;text-transform:uppercase;letter-spacing:.8px;color:var(--d)}
+p{margin:0 0 8px}
+.top{padding:calc(12px + var(--st)) 15px 10px;position:sticky;top:0;z-index:20;
+background:linear-gradient(180deg,rgba(7,12,23,.98),rgba(7,12,23,.94) 72%,rgba(7,12,23,0));backdrop-filter:blur(12px)}
+.top .s{color:var(--d);font-size:12px;margin-top:1px}
+.v{display:none;padding:0 15px 16px}.v.on{display:block}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;background:rgba(9,14,26,.97);
+backdrop-filter:blur(18px);border-top:1px solid var(--l);padding-bottom:var(--sb)}
+.nav b{flex:1;padding:9px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:1px;
+color:var(--d2);font-size:9px;font-weight:700;letter-spacing:.2px}
+.nav b.on{color:var(--tl)}.nav i{font-size:18px;font-style:normal;line-height:1}
+.card{background:var(--c);border:1px solid var(--l);border-radius:15px;padding:12px;margin-bottom:10px}
+.row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.sp{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.d{color:var(--d)}.xs{font-size:11px}.sm{font-size:13px}
+.btn{background:linear-gradient(135deg,var(--tl),#1fb8a5);color:#04141a;border:0;padding:12px 15px;border-radius:11px;
+font-weight:750;font-size:14px;min-height:45px;width:100%}
+.btn:active{transform:scale(.975)}
+.btn.g{background:var(--c2);color:var(--t);border:1px solid var(--l);font-weight:650}
+.btn.s{min-height:0;padding:8px 11px;font-size:12.5px;border-radius:9px;width:auto}
+input,select{background:#0b1425;border:1px solid var(--l);border-radius:10px;padding:10px 11px;width:100%;-webkit-appearance:none;appearance:none}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--d) 50%),linear-gradient(135deg,var(--d) 50%,transparent 50%);
+background-position:calc(100% - 17px) 50%,calc(100% - 12px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:32px}
+.pill{display:inline-block;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:750;border:1px solid var(--l);background:#17253f;color:var(--d)}
+.pill.t{background:rgba(45,212,191,.13);color:#8ff0e2;border-color:rgba(45,212,191,.32)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
+.tile{background:var(--c2);border:1px solid var(--l);border-radius:12px;padding:9px}
+.tile .l{font-size:8.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--d);font-weight:700}
+.tile .n{font-size:19px;font-weight:800;letter-spacing:-.5px;margin-top:1px;font-variant-numeric:tabular-nums}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #1a2740;font-size:13px}
+.kv:last-child{border-bottom:0}.kv b{text-align:right}
+.fw{perspective:1500px;margin-bottom:10px}
+.fc{position:relative;min-height:250px;border-radius:19px;transform-style:preserve-3d;transition:transform .4s cubic-bezier(.4,.1,.2,1)}
+.fc.fl{transform:rotateY(180deg)}
+.fa{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:19px;padding:16px;
+display:flex;flex-direction:column;overflow-y:auto;border:1px solid var(--l);background:linear-gradient(160deg,#152340,#101b2e)}
+.fa.b{transform:rotateY(180deg);background:linear-gradient(160deg,#12283a,#0f1c30);border-color:rgba(45,212,191,.28)}
+.fa .q{font-size:16.5px;font-weight:650;line-height:1.4}
+.fa .a{font-size:13.8px;line-height:1.56;color:#cfe0f7}.fa .a b{color:#fff}
+.fa .h{margin-top:auto;padding-top:12px;font-size:10.5px;color:var(--d2);text-align:center}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.g4 button{padding:10px 2px;border-radius:10px;border:1px solid var(--l);background:var(--c2);font-size:10.5px;font-weight:750;color:var(--t)}
+.g4 em{display:block;font-size:8.5px;font-style:normal;color:var(--d2);margin-top:1px}
+.item{padding:10px;border-radius:12px;border:1px solid var(--l);background:var(--c);margin-bottom:6px}
+.item .t{font-size:13px;font-weight:620;line-height:1.3}.item .m{font-size:10.5px;color:var(--d);margin-top:2px}
+.chk{display:flex;gap:9px;align-items:flex-start;padding:8px 9px;border-radius:10px;background:#0f1a2d;margin-bottom:4px;
+font-size:12.8px;line-height:1.38;border:1px solid transparent}
+.chk.on{background:rgba(45,212,191,.1);border-color:rgba(45,212,191,.28);color:var(--d)}
+.chk u{width:18px;height:18px;flex:0 0 18px;border-radius:5px;border:1.5px solid #33456a;display:grid;place-items:center;
+font-size:11px;color:transparent;text-decoration:none;margin-top:1px}
+.chk.on u{background:var(--tl);border-color:var(--tl);color:#04141a}
+.warn{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.28);border-radius:11px;padding:10px;font-size:12.5px;color:#ffe0ad;line-height:1.45}
+.clk{font-size:38px;font-weight:800;letter-spacing:-1.8px;font-variant-numeric:tabular-nums;line-height:1}
+.bar{height:7px;border-radius:5px;background:#0b1424;border:1px solid var(--l);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--tl),var(--in))}
+.tst{position:fixed;left:15px;right:15px;bottom:calc(78px + var(--sb));z-index:90;background:#152340;border:1px solid var(--l);
+border-radius:12px;padding:11px 13px;font-size:12.5px;box-shadow:0 12px 32px rgba(0,0,0,.55);display:none;line-height:1.45}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+</head>
+<body>
+<div class="top" id="top"></div>
+<div id="vs"></div>
+<nav class="nav" id="nav">
+<b data-v="cards" class="on"><i>▤</i>Cards</b>
+<b data-v="ccs"><i>✚</i>CCS</b>
+<b data-v="info"><i>⋯</i>Info</b>
+</nav>
+<div class="tst" id="tst"></div>
+<script>
+var LSK='s3app2',mem={},lok=true;
+function gs(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){lok=false;return mem[k]!==undefined?mem[k]:d}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){lok=false;mem[k]=v}}
+var S=gs(LSK,{p:{},ccs:[],rev:0});if(!S.p)S.p={};if(!S.ccs)S.ccs=[];
+function save(){ss(LSK,S)}
+function T(m){var t=document.getElementById('tst');t.innerHTML=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(function(){t.style.display='none'},3400)}
+function E(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+/* deck|front|back */
+var C=[
+"Biostats: Measures|Sensitivity|TP/(TP+FN). Rules disease <b>OUT</b> — a negative is reassuring (SnNout). A property of the test, not the population.",
+"Biostats: Measures|Specificity|TN/(TN+FP). Rules disease <b>IN</b> — a positive confirms (SpPin).",
+"Biostats: Measures|PPV|TP/(TP+FP). <b>Rises with prevalence.</b> The same test in a different population gives a different PPV.",
+"Biostats: Measures|NPV|TN/(TN+FN). <b>Falls with prevalence.</b>",
+"Biostats: Measures|LR+|sens/(1−spec). >10 large shift toward disease · 5–10 moderate · 2–5 small · 1 = no change. Prevalence-independent, so it travels across populations.",
+"Biostats: Measures|LR−|(1−sens)/spec. <0.1 large shift away · 0.1–0.2 moderate · 0.2–0.5 small.",
+"Biostats: Measures|Odds and post-test probability|Odds = p/(1−p). Post-test odds = pre-test odds × LR. Convert back: p = odds/(1+odds).",
+"Biostats: Measures|Accuracy|(TP+TN)/total. Can look excellent at extreme prevalence even when the test is clinically useless.",
+"Biostats: Measures|ARR|Control event rate − treatment event rate. Always express trial results absolutely, not just relatively.",
+"Biostats: Measures|NNT|1/ARR. <b>Round up.</b> NNH = 1/ARI.",
+"Biostats: Measures|RRR vs ARR|RRR = ARR/control rate. 2%→1% is a 50% RRR but an ARR of 1 point → <b>NNT 100</b>. The classic relative-vs-absolute trap.",
+"Biostats: Measures|Relative risk|Cohort: incidence in exposed / incidence in unexposed.",
+"Biostats: Measures|Odds ratio|Odds of exposure in cases / odds in controls. Approximates RR only when the disease is rare.",
+"Biostats: Measures|Attributable risk|Incidence exposed − incidence unexposed. Population AR = total incidence − unexposed incidence.",
+"Biostats: Measures|Prevalence|All existing cases at a point. Prevalence ≈ incidence × duration, so better survival raises prevalence without changing incidence.",
+"Biostats: Measures|Incidence rate|New cases / <b>person-time</b>. Handles people entering and leaving at different times.",
+"Biostats: Measures|SD vs SEM|SD describes the spread of the data. SEM = SD/√n describes precision of the mean. 95% CI ≈ mean ± 1.96 × SEM.",
+"Biostats: Measures|CI width and sample size|Width ∝ 1/√n. To <b>halve</b> the width you need <b>four times</b> the sample.",
+"Biostats: Measures|Z-score|Z = (value − mean)/SD. 1.96 ≈ the 2.5th/97.5th percentile. ±2 SD captures about 95% of a normal distribution.",
+"Biostats: Measures|Mean vs median|Use the median for skewed data. The mean is dragged by outliers — income, length of stay, viral load.",
+"Biostats: Measures|Standardised mortality ratio|Observed deaths / expected deaths for the same age-sex structure. 1.0 = as expected.",
+
+"Biostats: Study Design|RCT|The only design establishing causality — randomisation balances known <b>and unknown</b> confounders.",
+"Biostats: Study Design|Cohort|Yields RR, attributable risk, incidence. Can establish temporality. <b>Loss to follow-up</b> is the main threat.",
+"Biostats: Study Design|Case-control|Yields <b>odds ratio only</b>. Efficient for rare disease and long latency. Recall and control-selection bias.",
+"Biostats: Study Design|Cross-sectional|Prevalence only. Cannot establish temporality. Fast and cheap.",
+"Biostats: Study Design|Ecological|Group-level association. Vulnerable to the <b>ecological fallacy</b> — a group correlation need not hold for individuals.",
+"Biostats: Study Design|ITT vs per-protocol|ITT keeps randomisation → <b>effectiveness</b>. Per-protocol → efficacy, but non-random dropout biases it.",
+"Biostats: Study Design|Allocation concealment|Distinct from blinding. Prevents selection bias at enrolment — randomisation must not be predictable.",
+"Biostats: Study Design|Blinding levels|Single = participant. Double = participant + investigator. Triple adds the analyst. Reduces placebo effect and ascertainment bias.",
+"Biostats: Study Design|Crossover trial|Each patient is their own control — efficient, but needs a washout and risks carryover effect.",
+"Biostats: Study Design|Cluster randomised trial|Randomise groups (clinics, villages). Must account for intra-cluster correlation or the analysis is over-powered.",
+"Biostats: Study Design|Trial phases|I safety/dose · II efficacy signal and dose-finding · III comparative efficacy (pivotal) · IV post-marketing surveillance.",
+"Biostats: Study Design|Non-inferiority|Pre-specified margin. Used when the new option is safer, cheaper or easier. Both ITT and per-protocol are inspected.",
+"Biostats: Study Design|Interim analysis|Planned looks with alpha spending. Trials stopped early <b>overestimate</b> the effect — a real source of inflated results.",
+"Biostats: Study Design|Regression to the mean|Extreme values revert on their own. Why treating the sickest patients appears to work.",
+"Biostats: Study Design|Confounder vs effect modifier|Confounder distorts the estimate — control for it by design or analysis. Effect modifier changes the magnitude across strata — <b>report it</b>, never adjust it away.",
+"Biostats: Study Design|Selection bias|Systematic difference between who entered the study and who should have. Healthy-worker effect, volunteer bias, loss to follow-up.",
+"Biostats: Study Design|Information bias|Misclassification of exposure or outcome. Non-differential (random) dilutes the effect toward null; differential biases either way.",
+
+"Biostats: Interpretation|p-value|P(result this extreme | null true). <b>Not</b> the probability the null is true, and not a measure of effect size.",
+"Biostats: Interpretation|Type I error|Alpha, false positive, convention 0.05. Twenty independent tests → about one false positive by chance.",
+"Biostats: Interpretation|Type II error|Beta, false negative. Power = 1 − beta, conventionally 80%.",
+"Biostats: Interpretation|What raises power|Larger n · larger effect size · less variability · higher alpha. <b>Not</b> by lowering the p threshold.",
+"Biostats: Interpretation|95% CI|A relative measure (RR, OR, HR) crossing <b>1</b> → not significant. A difference crossing <b>0</b> → not significant.",
+"Biostats: Interpretation|Wide CI means|Imprecision, usually small n. A non-significant result from a small study is <b>underpowered</b>, not equivalent.",
+"Biostats: Interpretation|Multiple comparisons|~1 false positive per 20 tests. Adjust (Bonferroni) or pre-specify the primary outcome.",
+"Biostats: Interpretation|Subgroup analysis|Pre-specified, biologically plausible subgroups are credible. Post-hoc fishing generates hypotheses only.",
+"Biostats: Interpretation|Composite endpoints|Power rises with event rate, but a soft component can drive the whole result. Check that every component moved together.",
+"Biostats: Interpretation|Surrogate endpoints|A1c, LDL-C, blood pressure, tumour size. Must be validated — improving a surrogate does not guarantee better outcomes.",
+"Biostats: Interpretation|Why ITT can look negative|ITT dilutes a real effect, so ITT null with per-protocol positive is possible. That does not make per-protocol the right analysis.",
+"Biostats: Interpretation|Forest plot|Each trial a point estimate with CI, sized by weight. A CI crossing the line of no effect means that trial alone was inconclusive.",
+"Biostats: Interpretation|Funnel plot|Detects publication bias. Asymmetry suggests small negative studies went unpublished.",
+"Biostats: Interpretation|Statistically vs clinically significant|A tiny difference in a huge trial is significant and can still be meaningless to a patient. Ask for the absolute difference.",
+"Biostats: Interpretation|External validity|Does the trial population resemble your patient? Exclusions, age, comorbidity and setting determine whether the result transfers.",
+
+"Screening & Decision Rules|WHO screening criteria|Important disease · recognisable latent stage · effective treatment that works better when early · acceptable accurate test · facilities for diagnosis and treatment · balanced cost. <b>The most-missed criterion is having a destination for the detected patient.</b>",
+"Screening & Decision Rules|Lead-time bias|Earlier detection appears to prolong survival — the clock merely starts earlier. Why survival is the wrong screening endpoint.",
+"Screening & Decision Rules|Length bias|Screening preferentially detects slow-growing disease, inflating apparent survival.",
+"Screening & Decision Rules|Overdiagnosis|Detecting disease that would never have caused harm. Incidence rises with no fall in mortality.",
+"Screening & Decision Rules|The correct screening endpoint|<b>Disease-specific mortality.</b> Survival and 5-year survival are both distorted by lead-time and length bias.",
+"Screening & Decision Rules|Number needed to screen|NNT / prevalence of the condition. Rare disease → very large NNS. Arithmetic, not rationing.",
+"Screening & Decision Rules|Serial testing|Positive on <b>both</b> tests → raises specificity, lowers sensitivity. Used to confirm a diagnosis.",
+"Screening & Decision Rules|Parallel testing|Positive on <b>either</b> test → raises sensitivity, lowers specificity. Used to rule out in an emergency.",
+"Screening & Decision Rules|ROC curve|Plots sensitivity against (1 − specificity). AUC = discrimination; 0.5 is a coin flip. Moving the threshold trades sensitivity for specificity.",
+"Screening & Decision Rules|Fagan nomogram|Pre-test probability plus likelihood ratio → post-test probability, graphically. The whole point of likelihood ratios.",
+"Screening & Decision Rules|Spectrum bias|A test performs differently across disease severity — derived in severely ill inpatients, then applied to mild outpatients.",
+"Screening & Decision Rules|Verification bias|Only patients who test positive get the gold standard, so the test looks better than it is.",
+"Screening & Decision Rules|USPSTF grades|A/B <b>offer</b> · C offer selectively · D recommend against · I insufficient evidence.",
+
+"Epidemiology|Crude vs adjusted rates|Age adjustment removes the effect of differing age structure — the retirement town versus the college town comparison.",
+"Epidemiology|Case-fatality rate|Deaths / number diagnosed. Measures severity, not risk of acquiring disease.",
+"Epidemiology|Attack rate|Number ill / number exposed. The measure used in outbreak investigations.",
+"Epidemiology|Outbreak investigation order|Confirm the outbreak → write a case definition → describe by time, place, person → generate hypotheses → test with case-control or cohort → control → communicate. Control measures usually start before the analysis finishes.",
+"Epidemiology|Epidemic curves|Point source = single sharp peak. Continuous common source = plateau then fall. Propagated = successive peaks one incubation period apart, each taller.",
+"Epidemiology|Herd immunity|Threshold ≈ <b>1 − 1/R0</b>. Higher R0 → higher coverage needed; measles approaches 95%.",
+"Epidemiology|Bradford Hill criteria|Temporality · strength · dose–response · consistency · plausibility · reversibility · specificity. <b>Temporality is the only essential criterion.</b>",
+"Epidemiology|Mortality vs morbidity|Mortality = deaths. Morbidity = disease burden. An intervention can improve one while worsening the other.",
+"Epidemiology|Years of potential life lost|Weights deaths in the young more heavily — why injury, overdose and suicide dominate YPLL despite lower overall mortality.",
+"Epidemiology|Notifiable diseases|Physician reporting to public health is a legal duty. Includes most vaccine-preventable diseases, TB, HIV, hepatitis, syphilis, gonorrhoea and lead poisoning.",
+"Epidemiology|Life expectancy vs YPLL|Life expectancy reflects the whole population; YPLL weights preventable death in the young and tracks injury and overdose.",
+"Epidemiology|Standardisation purpose|Lets you compare populations or providers whose demographic structures differ — otherwise you are comparing age distributions, not care.",
+
+"Drug Ads & Abstracts|First question to ask|What is the <b>actual FDA-approved indication</b>, and is the studied use the same? Ads routinely present data for a different population or endpoint than the labelled one.",
+"Drug Ads & Abstracts|The comparator|Placebo vs active vs dose-comparison. A placebo-controlled trial <b>cannot</b> tell you the drug beats the current standard of care.",
+"Drug Ads & Abstracts|The endpoint|Is it clinical (death, MI, symptom relief) or a surrogate (A1c, LDL-C, tumour response)? An ad is far more likely to show you the surrogate.",
+"Drug Ads & Abstracts|Absolute vs relative|Ads print the relative risk reduction. Compute the ARR and the NNT yourself — the NNT is rarely shown because it is usually unflattering.",
+"Drug Ads & Abstracts|The confidence interval|An interval crossing <b>1</b> for a ratio means the result was not statistically significant, whatever the p-value graphic implies.",
+"Drug Ads & Abstracts|Who was enrolled|Look at exclusions as carefully as inclusions. Results do not transfer to the patients you would have excluded.",
+"Drug Ads & Abstracts|Duration of follow-up|Short trials cannot establish sustained benefit or long-term safety. Check the x-axis before believing the conclusion.",
+"Drug Ads & Abstracts|Post-hoc subgroups|A benefit in a subgroup that was not pre-specified is hypothesis-generating — and is commonly presented as though it were a finding.",
+"Drug Ads & Abstracts|Funding and analysis|Industry-funded and industry-analysed trials report favourable results more often. Not disqualifying, but it changes how much weight you give the conclusion.",
+"Drug Ads & Abstracts|Open-label extension|Everyone gets the drug and everyone knows it. Useful for long-term safety signals, useless for efficacy.",
+"Drug Ads & Abstracts|Abstract item — what is really being tested|Usually one of three things: identify the design, identify the correct measure of association, or judge whether the authors' conclusion is supported by the numbers given.",
+"Drug Ads & Abstracts|Abstract item — the usual trap|The stated conclusion overreaches the data — a surrogate endpoint, a post-hoc subgroup, or a relative risk stated without absolute numbers.",
+"Drug Ads & Abstracts|Abstract item — relative vs absolute again|When an abstract gives only a relative reduction, the answer is often that the absolute benefit is too small to justify the therapy.",
+"Drug Ads & Abstracts|Abstract item — numbers needed|Check that denominators match. A common flaw is comparing rates calculated on different populations or time periods.",
+
+"NBME Reasoning|Sequential item sets|On Step 3 these <b>lock</b> — you cannot return to a previous question in the set. Read the entire stem before answering the first item.",
+"NBME Reasoning|Unanswered questions|Scored <b>wrong</b>. There is no penalty for a wrong answer, so always guess. Never leave a blank.",
+"NBME Reasoning|Block rules|You may only review and change answers <b>within</b> the current block. Once closed, nothing in it can be revisited.",
+"NBME Reasoning|Next best step|Answer the <b>next action</b>, not the definitive diagnosis. Stabilise before you investigate when the patient is unstable.",
+"NBME Reasoning|Most likely diagnosis vs next best step|Read what the stem actually asks — the two questions have different answers in the same vignette.",
+"NBME Reasoning|Safety-first ranking|When options are close, choose the one addressing the greatest immediate threat. ABCs always outrank diagnostics.",
+"NBME Reasoning|Best initial test vs most accurate test|Best initial is fast and available; most accurate may be invasive or slower. The stem tells you which it wants.",
+"NBME Reasoning|Drug of choice vs first step|Sometimes the first step is non-pharmacologic — counsel, stop a drug, or observe. Read for it.",
+"NBME Reasoning|Age as a clue|New symptoms over age 50 — headache, back pain, anaemia, weight loss — demand a malignancy or vascular workup.",
+"NBME Reasoning|Vitals as the pivot|One abnormal vital sign (hypotension, hypoxia, fever, tachycardia) usually reframes the whole answer toward urgent intervention.",
+"NBME Reasoning|The commonest distractor|An option that is <b>true but does not answer the question asked</b>. This is the single most common reason people miss items they 'knew.'",
+"NBME Reasoning|Unfamiliar lab pattern|Match the pattern to the disease <b>class</b> first, then to the specific disease. Anion gap, osmolar gap, delta-delta, corrected sodium and calcium.",
+"NBME Reasoning|Corrected sodium|Corrected Na = measured Na + 1.6 × (glucose − 100)/100. Matters in DKA and HHS.",
+"NBME Reasoning|Corrected calcium|Corrected Ca = measured Ca + 0.8 × (4.0 − albumin). Hypoalbuminaemia falsely lowers measured calcium.",
+"NBME Reasoning|Anion gap in hypoalbuminaemia|Add 2.5 to the calculated gap for every 1 g/dL the albumin is below 4.0 — otherwise you will miss a high-gap acidosis.",
+"NBME Reasoning|Osmolar gap|Measured osmolality − calculated (2×Na + glucose/18 + BUN/2.8). A gap suggests methanol, ethylene glycol, isopropanol or propylene glycol.",
+
+"Ethics|Informed consent|Capacity + disclosure + comprehension + voluntariness. The clinician performing the procedure obtains it — a signature is documentation, not consent.",
+"Ethics|Decision-making capacity|Communicate a choice · understand · <b>appreciate</b> the consequences · reason. Clinicians determine capacity; courts determine competence.",
+"Ethics|Capacity is decision-specific|A patient may be able to accept dialysis but not refuse a transfusion. Assess for <b>this</b> decision, at <b>this</b> moment.",
+"Ethics|Refusal of life-saving care|With capacity, the refusal is binding even if unwise. Without capacity → surrogate and substituted judgment → ethics committee, never an override.",
+"Ethics|Emergency exception|Lack of capacity plus risk of serious harm → <b>implied consent</b>, minimum necessary treatment. Never delay life-saving care to reach a surrogate.",
+"Ethics|Confidentiality exceptions|Patient waiver · mandatory reporting · Tarasoff duty to warn or protect an identifiable third party · valid court order.",
+"Ethics|Surrogate hierarchy|Spouse or partner → adult children → parents → siblings → close friends. Standard is <b>substituted judgment</b>; best interest only if wishes are unknown.",
+"Ethics|Advance directives|Living will = specific interventions. Health-care proxy = names a surrogate. POLST = portable order actionable by EMS.",
+"Ethics|DNR|Applies <b>only</b> to resuscitation. Does not restrict analgesia, antibiotics, fluids or surgery, and never removes the duty to treat.",
+"Ethics|Withholding vs withdrawing|Ethically <b>equivalent</b>. No duty to start a treatment; no difference in stopping one that proves non-beneficial.",
+"Ethics|Brain death|Irreversible loss of the entire brain <b>including the brainstem</b>. Exclude sedation, paralytics, hypothermia and metabolic causes. Apnoea test.",
+"Ethics|EMTALA|An ED must provide a medical screening examination and stabilizing treatment regardless of insurance. Transfer requires stabilisation plus acceptance.",
+"Ethics|Mandatory reporting|Child and elder abuse, gunshot wounds, specified communicable diseases, impaired physicians. Legal duties that override confidentiality.",
+"Ethics|Therapeutic misconception|Participants believing research is designed primarily to benefit <b>them</b>. The commonest failure of consent in trials.",
+"Ethics|Placebo-controlled trials|Ethical when no proven treatment exists and withholding poses no serious risk. Otherwise an active comparator is required.",
+"Ethics|Four principles|Autonomy · beneficence · non-maleficence · justice. Cases usually hinge on autonomy vs beneficence — autonomy wins when capacity is present.",
+"Ethics|Justice in allocation|Distinguish distributive (who gets scarce resources) from rights-based (equal access). Scoring systems and lotteries are legitimate; ability to pay and social worth are not.",
+"Ethics|Impaired colleague|Your duty is to protect patients. Report to the state physician health programme. Addressing the colleague directly is reasonable only if patients are not immediately endangered.",
+"Ethics|Minors and consent|Emancipated minors (married, military, financially independent, court order) consent for themselves. Most states permit confidential care for STIs, pregnancy, contraception and substance use.",
+
+"Communication|Delivering bad news — SPIKES|Setting up · Perception (what do they already understand?) · Invitation (how much do they want to know?) · Knowledge (warning shot, then information) · Empathy · Strategy and summary. The most-tested step is the <b>warning shot</b>.",
+"Communication|Non-adherence|A shared problem, not a character flaw. Explore cost, side effects, complexity, health literacy, depression and beliefs. <b>Simplifying the regimen</b> is often the most effective single intervention.",
+"Communication|Interpreters|Use a <b>trained professional interpreter</b>, never a family member, and never a child. Family members distort, withhold and add information.",
+"Communication|Teach-back|Ask the patient to explain the plan in their own words. 'Do you have any questions?' is answered 'no' by almost everyone.",
+"Communication|Suicide risk assessment|Ask directly — asking does not increase risk. Assess ideation, plan, intent, <b>access to means</b>, prior attempts, substance use, protective factors. Safety planning and means restriction have the strongest evidence.",
+"Communication|When family asks you to withhold information|The <b>patient's</b> wishes govern. Ask what they want shared and with whom, including what to do if they lose capacity. Cultural context matters, but the patient's own preference outranks a relative's.",
+"Communication|Shared decision-making|Present options, evidence and uncertainty, elicit values and goals, decide together. It is not a menu and not a signature — it matters most where evidence is balanced or trade-offs are preference-sensitive.",
+
+"Safety, QI & Systems|Donabedian|Structure · process · outcome. <b>Process</b> measures are the most actionable and usually the target of improvement work.",
+"Safety, QI & Systems|PDSA cycles|Plan-Do-Study-Act — small rapid tests, iterated. The standard QI engine. Big-bang restructuring is almost never the answer.",
+"Safety, QI & Systems|RCA vs FMEA|RCA is retrospective, after a sentinel event. FMEA is prospective — what could fail, and how badly.",
+"Safety, QI & Systems|Swiss cheese model|Harm when latent weaknesses in multiple layers line up so no layer catches the error. Fix the system, not just the individual.",
+"Safety, QI & Systems|I-PASS|Illness severity, Patient summary, Action list, Situation awareness, Synthesis by receiver. The <b>read-back</b> closes the loop and is the step most often omitted.",
+"Safety, QI & Systems|Near miss, adverse event, sentinel|Caught before harm / harm from management / death or serious injury requiring RCA. Near misses are free lessons and should be studied.",
+"Safety, QI & Systems|Just culture|Human error → console and fix the system. At-risk behaviour → coach, remove the incentive. Reckless behaviour → sanction.",
+"Safety, QI & Systems|CLABSI bundle|Hand hygiene · maximal sterile barrier · chlorhexidine antisepsis · avoid the femoral site in adults · <b>daily line-necessity review</b>.",
+"Safety, QI & Systems|CAUTI bundle|Avoid unnecessary catheters, aseptic insertion, bag below bladder level, daily necessity review, early removal. <b>Do not treat asymptomatic bacteriuria</b> — exceptions are pregnancy and pre-urological procedure.",
+"Safety, QI & Systems|VAP prevention|Head of bed 30–45° · daily sedation interruption with a spontaneous breathing trial · oral care · PUD and DVT prophylaxis · avoid unnecessary circuit changes.",
+"Safety, QI & Systems|Medication reconciliation|At every transition — admission, transfer, discharge. Include over-the-counter agents and supplements.",
+"Safety, QI & Systems|Four highest-risk drug classes|Anticoagulants · insulin · opioids · concentrated electrolytes. Most harmful inpatient medication errors involve one of these.",
+"Safety, QI & Systems|Look-alike, sound-alike drugs|hydrALAZINE vs hydrOXYzine; glipiZIDE vs glyBURIDE. Mitigate with tall man lettering, separated storage, read-back, and including the indication.",
+"Safety, QI & Systems|Error disclosure|Prompt, clear, empathetic. Say what is known, what is not yet known, and what happens next. Never speculate about cause or blame.",
+"Safety, QI & Systems|Control charts|Common cause = inherent in a stable process, needs redesign. Special cause = shift, trend, or point beyond control limits. Reacting to common cause as special is tampering.",
+"Safety, QI & Systems|Transitions of care|Highest risk is 7–30 days post-discharge. A follow-up appointment made <b>before</b> discharge is the highest-yield single step.",
+"Safety, QI & Systems|Team-based care|Pharmacists, nurses, dietitians, community health workers and care managers improve blood pressure control, diabetes outcomes and readmission rates. The 2025 hypertension guideline recommends it explicitly.",
+"Safety, QI & Systems|Social drivers of health|Food insecurity, housing instability, transport and utility insecurity drive outcomes. Screen only when you have a resource to offer.",
+"Safety, QI & Systems|Implicit bias|Affects decisions independent of intent. Systematic mitigation means standardised protocols and checklists that remove discretionary judgment where bias operates.",
+"Safety, QI & Systems|Hierarchy and speaking up|Hierarchy is the biggest barrier to raising concerns on a clinical team, which is why structured tools (CUS, two-challenge rule) and clear escalation chains exist.",
+"Safety, QI & Systems|Cost-conscious care|Choose generics and the less invasive test when options are equivalent. Never let cost drive a decision that materially worsens outcome — high-value care means not wasting, not withholding.",
+
+"Preventive Medicine|Breast cancer screening|Biennial mammography, women <b>40–74</b> (grade B). Started at 40 in the 2024 update — older sources still say 50, which is a classic stale-source trap.",
+"Preventive Medicine|Cervical cancer screening|21–29 cytology q3y. Ages 30–65: cytology q3y <b>or</b> high-risk HPV q5y <b>or</b> cotesting q5y. Not under 21 or over 65 in adequately screened women.",
+"Preventive Medicine|Colorectal cancer screening|Average-risk adults <b>45–75</b> (B for 45–49, A for 50–75). Colonoscopy q10y, annual FIT, stool DNA, flexible sigmoidoscopy, or CT colonography. 76–85 individualised.",
+"Preventive Medicine|Lung cancer screening|Annual low-dose CT, <b>50–80</b>, <b>≥20 pack-years</b>, current smoker or quit within <b>15 years</b>. Stop after 15 years of abstinence or when life expectancy is limiting.",
+"Preventive Medicine|AAA screening|One-time ultrasound, men <b>65–75 who have ever smoked</b> (B). Selective for never-smoking men; insufficient evidence in women who never smoked.",
+"Preventive Medicine|Diabetes screening|Adults <b>35–70 with overweight or obesity</b> (B). Screen earlier with family history, high-risk ethnicity, hypertension, PCOS, gestational diabetes, HIV, or prior CVD. Refer prediabetes to a preventive programme.",
+"Preventive Medicine|Prostate cancer screening|USPSTF: 55–69 individualised decision (C); 70+ do not screen (D). <b>AUA/SUO 2026 differs</b> — PSA first, repeat an elevated PSA before secondary testing, start 40–45 if increased risk, q2–4y ages 50–69.",
+"Preventive Medicine|HIV, HCV, HBV screening|HIV 15–65 (A). HCV all adults 18–79 once (B). HBV risk-based per USPSTF but one-time for all adults per CDC — the two genuinely differ.",
+"Preventive Medicine|Osteoporosis screening|Women ≥65 and postmenopausal women <65 at increased risk (Jan 2025). DXA screens; FRAX informs the treatment decision.",
+"Preventive Medicine|Depression and anxiety screening|Depression: all adults including pregnant, postpartum and older adults (B). Anxiety: adults ≤64 (B). PHQ-2 then PHQ-9; GAD-7.",
+"Preventive Medicine|Intimate partner violence|Screen women of reproductive age including pregnant and postpartum (B, 2025). Must be paired with access to intervention.",
+"Preventive Medicine|Folic acid|0.4–0.8 mg daily for anyone who could become pregnant (A). Neural tube defects form in the first 4 weeks, often before pregnancy is recognised.",
+"Preventive Medicine|Aspirin for preeclampsia prevention|Low-dose <b>81 mg daily</b>, start between 12 and 28 weeks, <b>optimally before 16 weeks</b>, for high-risk pregnancy (B).",
+"Preventive Medicine|Tobacco cessation|5 A's plus pharmacotherapy — varenicline, bupropion, or NRT. Combination beats either alone (A). Behavioural intervention only in pregnancy.",
+"Preventive Medicine|Statin primary prevention (USPSTF)|Adults 40–75 with ≥1 risk factor and 10-year CVD risk <b>≥10%</b> (B). The 2026 ACC/AHA guideline is far more granular — risk-stratified with PREVENT and reintroduced LDL-C targets.",
+"Preventive Medicine|Unhealthy alcohol use|Screen adults ≥18 including pregnant women and provide brief behavioural counselling to risky drinkers (B). AUDIT-C is the usual instrument.",
+
+"Cardiology|BP classification (2025)|Normal <120/80 · elevated 120–129/<80 · stage 1 130–139 or 80–89 · stage 2 ≥140 or ≥90. <b>Goal <130/80 for all adults</b>, with individualised exceptions.",
+"Cardiology|When to start antihypertensives|Everyone ≥140/90. At ≥130/80 if CVD, prior stroke, diabetes, CKD, or 10-y CVD risk <b>≥7.5% by PREVENT</b>. Risk <7.5% → lifestyle 3–6 months, then treat if still ≥130/80.",
+"Cardiology|PREVENT equation|Estimates <b>total CVD including heart failure</b>, ages 30–79, includes kidney function and statin use. The old pooled cohort equations overpredicted risk about twofold.",
+"Cardiology|Stage 2 initial therapy|Start <b>two</b> first-line agents of different classes, preferably as a single-pill fixed-dose combination. Faster control, better adherence.",
+"Cardiology|First-line antihypertensives|Thiazide-type (chlorthalidone or indapamide over low-dose HCTZ) · ACEi · ARB · dihydropyridine CCB. Choose by comorbidity.",
+"Cardiology|Resistant hypertension (2025)|Screen for <b>primary aldosteronism regardless of potassium</b> (Class 1). Continue most antihypertensives before screening, <b>except an MRA</b>, to avoid delay.",
+"Cardiology|HTN with CKD or diabetes|ACEi <b>or</b> ARB, <b>never both</b>, for eGFR <60 with albuminuria ≥30 mg/g.",
+"Cardiology|Severe HTN vs hypertensive emergency|>180/120 <b>without</b> target-organ damage = severe hypertension → oral agents as an outpatient. 'Hypertensive urgency' is retired. Acutely lowering it in a hospitalised patient without TOD is <b>Class 3: Harm</b>.",
+"Cardiology|Hypertensive emergency|Lower MAP by <b>≤25% in the first hour</b>. Faster risks watershed ischaemia. Exceptions: aortic dissection and eclampsia.",
+"Cardiology|ICH and blood pressure|Systolic 150–220 → lower to <b>130 to <140</b> and maintain ≥7 days. Stop if systolic falls below 130. Avoid wide variability.",
+"Cardiology|Post-reperfusion stroke BP|Lowering systolic <140 in the first 24–72 h after successful endovascular reperfusion is <b>harmful</b> (Class 3: Harm).",
+"Cardiology|HTN and cognition|Goal systolic <130 to prevent MCI and dementia — upgraded to Class 1 in 2025.",
+"Cardiology|Salt substitutes and cuffless devices|Potassium-based salt substitutes are reasonable (Class 2a) except in CKD or with potassium-sparing drugs. Avoid smartwatches and cuffless devices for measurement.",
+"Cardiology|AF anticoagulation threshold|By <b>annual risk</b>, not a single score cut-off. Class 1 at ≥2%/yr ≈ CHA₂DS₂-VASc <b>≥2 in men and ≥3 in women</b>. Class 2a at 1–2%/yr (1 in men, 2 in women).",
+"Cardiology|AF anticoagulant choice|DOAC over warfarin, except <b>moderate–severe rheumatic mitral stenosis</b> or a <b>mechanical valve</b>. Aspirin alone or with clopidogrel is <b>not</b> an alternative (Class 3: Harm).",
+"Cardiology|HFrEF four pillars|ARNI (or ACEi/ARB) + evidence-based beta-blocker + MRA + <b>SGLT2 inhibitor</b>. Start all four at low dose rather than maximising one; complete within 4–6 weeks.",
+"Cardiology|SGLT2i in hospital|Minimal BP and kidney effect → can start any time once stable. Avoid in type 1 diabetes and ESKD. Reassess the diuretic dose after starting.",
+"Cardiology|ACS first minutes|ECG within <b>10 minutes</b>. Chewed aspirin. STEMI → activate reperfusion immediately, <b>do not wait for troponin</b>. Door-to-balloon ≤90 minutes.",
+"Cardiology|ACS cautions|Hold nitrates if hypotensive or with inferior/right-sided MI. Hold beta-blockers in cardiogenic shock or bradycardia.",
+"Cardiology|Cardiac arrest|Compressions 100–120/min, 5–6 cm depth, full recoil, minimal interruptions. Early defibrillation. Epinephrine 1 mg q3–5 min. Treat the Hs and Ts.",
+"Cardiology|Heparin-induced thrombocytopenia|Platelet drop ≥50%, day 5–10, with <b>thrombosis rather than bleeding</b>. Stop all heparin including flushes; start argatroban. No platelets, no warfarin alone.",
+"Cardiology|Aortic dissection|Tearing pain with a pulse deficit or BP differential. <b>Control heart rate first</b> with IV beta-blockade, then blood pressure — lowering pressure first worsens shear.",
+"Cardiology|Peripheral arterial disease|Claudication relieved by rest, diminished pulses, <b>ABI ≤0.90</b>. Supervised exercise, high-intensity statin, antiplatelet, smoking cessation, cilostazol.",
+
+"Lipids|PREVENT-ASCVD categories|LDL-C 70–189, ages 30–79: low <3% · borderline 3–<5% · intermediate 5–<10% · high <b>≥10%</b>. This is the ASCVD-specific equation, distinct from the total-CVD one used for blood pressure.",
+"Lipids|Targets reintroduced (2026)|Borderline/intermediate → LDL-C <b><100</b>, non-HDL-C <130. High-risk primary prevention → <b><70</b>, non-HDL-C <100. Secondary not-very-high-risk → <70. <b>Very high risk → <55</b>, non-HDL-C <85.",
+"Lipids|Statin intensity in diabetes|Ages 40–75 without ASCVD → moderate-intensity, goal LDL-C <100 and non-HDL-C <130. With multiple risk factors → high-intensity, goal <b><70</b> and non-HDL-C <100.",
+"Lipids|Coronary calcium scoring|Class 1 at <b>intermediate</b> risk when the decision is uncertain. CAC 0 → may defer and repeat in 3–7 years. CAC >0 → initiate LDL-lowering, especially ≥100 AU or ≥75th percentile.",
+"Lipids|Lipoprotein(a)|Measure <b>at least once in all adults</b> (Class 1, 2026). Genetically determined, stable across life, and a causal risk factor.",
+"Lipids|LDL-C estimation|Use <b>Martin/Hopkins</b> or <b>Sampson/NIH</b>, not Friedewald — Friedewald is inaccurate at LDL-C <70 and at high triglycerides, exactly where decisions are made.",
+"Lipids|Severe hypercholesterolaemia (≥190)|Statin plus ezetimibe, a PCSK9 mAb, and/or bempedoic acid. Goal <100, or <70 with HeFH, additional risk factors or coronary calcification. With ASCVD → <b><55</b>.",
+"Lipids|Very high risk secondary prevention|Add <b>ezetimibe and/or a PCSK9 mAb</b> to maximally tolerated statin → LDL-C <55, non-HDL-C <85.",
+"Lipids|Triglycerides and pancreatitis|Fasting TG <b>≥1000 mg/dL</b> → dietitian referral to reduce pancreatitis risk. Dietary supplements to lower LDL or TG are <b>not recommended</b> (Class 3).",
+"Lipids|Familial hypercholesterolaemia|Do <b>not</b> apply general-population risk calculators — they underestimate risk. Genetic testing reasonable for LDL ≥190 without secondary cause; cascade-screen relatives.",
+
+"Endocrine|A1c goals (ADA 2026)|<b><7%</b> for most nonpregnant adults; <6.5% if safely achievable with long life expectancy. Less stringent with frailty, cognitive limitation or severe comorbidity. Assess ≥2×/year, q3 months if not at goal.",
+"Endocrine|CGM targets (ADA 2026)|Time in range <b>>70%</b>. Time <70 mg/dL below 4% (below 1% in older adults). Time <54 mg/dL below 1%. Deintensify if not met.",
+"Endocrine|Cardiorenal agents irrespective of A1c|ASCVD or high risk → GLP-1 RA and/or SGLT2i. Heart failure → SGLT2i. CKD (eGFR 20–60 and/or albuminuria) → SGLT2i or GLP-1 RA. eGFR <30 → <b>GLP-1 RA preferred</b>. All independent of A1c, the A1c goal, and metformin.",
+"Endocrine|Initial therapy for type 2 diabetes|Combination therapy may be used <b>upfront</b> to shorten time to goal (Class A). Choose by cardiovascular, kidney, weight, hypoglycaemia risk, cost and access — not by A1c alone.",
+"Endocrine|GLP-1 RA versus insulin|Without severe hyperglycaemia, GLP-1-based therapy is <b>preferred to insulin</b> for initial or add-on therapy (Class A). Insulin if A1c >10% or glucose ≥300 mg/dL.",
+"Endocrine|Do not combine|A DPP-4 inhibitor with a GLP-1 RA or dual GIP/GLP-1 RA — no additional glucose lowering. Reassess insulin and sulfonylurea doses when adding a GLP-1 agent.",
+"Endocrine|MASLD/MASH|With MASH or high risk of fibrosis, a <b>GLP-1 RA is preferred</b>. Pioglitazone is an alternative; combination is an option for biopsy-proven MASH.",
+"Endocrine|Thyroid tests|TSH first. Low TSH → free T4 (and T3) to separate subclinical from overt. <b>Central hypothyroidism</b> shows low or inappropriately normal TSH with <b>low free T4</b> — TSH alone misleads you.",
+"Endocrine|Thyroid storm|Thionamide <b>first</b>, iodine <b>at least an hour later</b> (otherwise you feed the fire), plus beta-blockade and corticosteroids.",
+"Endocrine|Myxedema coma|Hypothermia, bradycardia, hypoventilation, hyponatraemia, decreased consciousness. IV levothyroxine plus stress-dose <b>glucocorticoids</b> until adrenal insufficiency is excluded, rewarming, ventilatory support.",
+"Endocrine|Sick day rules|<b>Never stop basal insulin.</b> Check glucose q4h, ketones if glucose >250, maintain hydration. Hold SGLT2 inhibitors during acute illness, fasting or surgery.",
+"Endocrine|Adrenal incidentaloma|Two questions: <b>is it functional?</b> (overnight dexamethasone suppression, plasma metanephrines, aldosterone-to-renin ratio) and <b>is it malignant?</b> (size and dedicated adrenal CT).",
+
+"Fluids, DKA & Electrolytes|DKA versus HHS|DKA: glucose 250–600, ketones, anion gap acidosis, pH often <7.3. HHS: glucose often >600, osmolality >320, minimal ketones, little acidosis. <b>Mixed picture → treat as DKA</b> at 0.1 units/kg/hr.",
+"Fluids, DKA & Electrolytes|Fluid resuscitation (2024)|Isotonic saline or balanced crystalloid <b>500–1000 mL/hr for the first 2–4 hours</b>. Older or cardiac/renal patients → <b>250 mL</b> boluses. HHS: do not let glucose fall faster than <b>90–120 mg/dL/hr</b>.",
+"Fluids, DKA & Electrolytes|Insulin doses|DKA <b>0.1 units/kg/hr</b>. HHS <b>0.05 units/kg/hr</b>. Bolus 0.1 units/kg only if venous access is delayed.",
+"Fluids, DKA & Electrolytes|The potassium rule|<b>The trap.</b> Replace when K+ falls below 5.0, targeting 4–5. If K+ is <b><3.5 at presentation</b>, replace at 10 mmol/hr and <b>hold insulin until above 3.5</b> — insulin shifts potassium intracellularly and can cause fatal arrhythmia.",
+"Fluids, DKA & Electrolytes|Bicarbonate and dextrose in DKA|Bicarbonate <b>only if pH <7.0</b>. Phosphate only if <1.0 mmol/L with cardiac, respiratory or muscle involvement. Add <b>dextrose 5–10%</b> once glucose <250 so insulin can continue until ketonaemia clears.",
+"Fluids, DKA & Electrolytes|Transition off an insulin drip|Start basal insulin <b>1–2 hours before</b> stopping the infusion. Total daily dose <b>0.3–0.6 units/kg/day</b> in a basal-bolus pattern.",
+"Fluids, DKA & Electrolytes|Hyperkalaemia sequence|Calcium gluconate <b>first if there are ECG changes</b> — it stabilises the myocardium without lowering potassium. Then shift: insulin with glucose, nebulised beta-agonist. Then remove: binders or dialysis. Shifting agents rebound.",
+"Fluids, DKA & Electrolytes|Hyponatraemia correction|Chronic: <b>≤6–8 mEq/L in 24 h</b> to avoid osmotic demyelination. Severe symptoms → hypertonic 3% saline, small bolus, ~4–6 mEq/L over the first few hours, then stop and reassess.",
+"Fluids, DKA & Electrolytes|SIADH|Euvolaemic hypoosmolar hyponatraemia with urine osmolality >100 and urine sodium >20–40, normal thyroid and adrenal function. Causes: small-cell lung cancer, CNS and pulmonary disease, SSRIs, carbamazepine.",
+"Fluids, DKA & Electrolytes|Adrenal crisis|Refractory hypotension with hyponatraemia, hyperkalaemia and hypoglycaemia, often after stress or abrupt steroid withdrawal. Treat immediately with <b>IV hydrocortisone</b> and fluids, before confirming.",
+"Fluids, DKA & Electrolytes|Anion gap acidosis|High gap — <b>MUDPILES</b>: methanol, uraemia, DKA, propylene glycol, isoniazid/iron, lactic acidosis, ethylene glycol, salicylates. Normal gap: diarrhoea, RTA, acetazolamide, large-volume saline, ureteral diversion.",
+"Fluids, DKA & Electrolytes|Delta-delta ratio|(measured gap − normal gap) / (normal HCO₃ − measured HCO₃). <1 → concurrent <b>normal-gap acidosis</b>. 1–2 → pure high-gap. >2 → concurrent <b>metabolic alkalosis</b> or chronic respiratory acidosis.",
+"Fluids, DKA & Electrolytes|Diuretic effects|Loop: hypokalaemia, hypomagnesaemia, <b>hypocalcaemia</b>, alkalosis, ototoxicity. Thiazide: hypokalaemia, hyponatraemia, <b>hypercalcaemia</b>, hyperglycaemia, hyperuricaemia. Potassium-sparing: <b>hyperkalaemia</b>, acidosis.",
+"Fluids, DKA & Electrolytes|Refeeding syndrome|Falls in phosphate, potassium and magnesium after restarting nutrition in a malnourished patient. Causes arrhythmia, respiratory muscle weakness and heart failure. Check and replete <b>before</b> feeding and feed slowly.",
+
+"ID & Sepsis|Antibiotic timing (SSC 2026)|Septic shock → <b>within 1 hour</b>. Probable or definite sepsis without shock → within 1 hour. Possible sepsis without shock → rapid workup then antibiotics <b>within 3 hours</b>. Low likelihood → defer with monitoring.",
+"ID & Sepsis|Initial fluid (SSC 2026)|At least <b>30 mL/kg IV crystalloid in the first 3 hours</b> for hypoperfusion or shock. Actual body weight; adjusted if BMI >30. <b>New in 2026: crystalloid alone</b> — no supplemental albumin.",
+"ID & Sepsis|Vasopressors (SSC 2026)|<b>Norepinephrine first-line.</b> MAP target <b>65 mmHg</b>; <b>60–65 if age ≥65</b>. Start <b>peripherally</b> rather than delaying for central access. Add vasopressin with escalating norepinephrine, then epinephrine.",
+"ID & Sepsis|What changed in 2026|Suggest <b>against</b> empiric antifungals · either invasive or non-invasive BP monitoring · crystalloid alone · MAP 60–65 in the older patient · no anaerobic coverage without risk factors · active fluid removal after resuscitation · lactate guides but do not chase normalisation.",
+"ID & Sepsis|Source control|Evaluate rapidly and perform source control <b>ideally within 6 hours</b> — drainage, relief of obstruction, debridement, or line removal.",
+"ID & Sepsis|When to broaden coverage|Known colonisation or prior infection with an MDR organism, prolonged broad-spectrum use, or prolonged stay in a high-prevalence unit. In low-risk patients, suggest <b>against</b> empiric MDR coverage.",
+"ID & Sepsis|Procalcitonin|Use <b>clinical evaluation alone</b> to decide whether to start antimicrobials. More useful for <b>stopping</b> antibiotics than for starting them.",
+"ID & Sepsis|Neutropenic fever|≥38.3°C once or ≥38.0°C sustained over an hour with ANC <500 (or <1000 and falling). Medical emergency: cultures then empiric <b>antipseudomonal beta-lactam</b> immediately. No rectal route anything.",
+"ID & Sepsis|C. difficile|Test only <b>symptomatic</b> patients. First line is <b>oral vancomycin or fidaxomicin</b>; metronidazole is now second-line. Stop the offending antibiotic; avoid antiperistaltic agents.",
+"ID & Sepsis|Infective endocarditis|Modified Duke. Major: typical organisms from separate blood cultures, and endocardial involvement on echo. Get <b>three blood culture sets before antibiotics</b>.",
+"ID & Sepsis|Bacterial meningitis|Do <b>not</b> delay antibiotics for a lumbar puncture. Vancomycin plus a third-generation cephalosporin. <b>Dexamethasone with or just before the first dose</b> if pneumococcal. CT before LP if papilloedema, focal deficit, seizure or immunosuppression.",
+"ID & Sepsis|Needlestick|Wash with soap and water — do not squeeze or scrub. HIV post-exposure prophylaxis within hours (ideally 1–2 h, no later than 72 h) for 28 days.",
+"ID & Sepsis|Animal bites|Pasteurella multocida is the commonest organism; <b>amoxicillin-clavulanate</b> is standard. Cat bites should generally not be closed primarily.",
+
+"Antimicrobials|Mechanisms by target|Cell wall: beta-lactams, vancomycin. Protein synthesis: 30S — aminoglycosides, tetracyclines; 50S — macrolides, clindamycin, linezolid. Nucleic acid: fluoroquinolones, rifampin, metronidazole. Folate: sulfonamides, trimethoprim.",
+"Antimicrobials|Avoid in pregnancy|Tetracyclines · fluoroquinolones · aminoglycosides · trimethoprim in the first trimester · sulfonamides near term · clarithromycin. Safe: penicillins, cephalosporins, erythromycin (not estolate), azithromycin, clindamycin.",
+"Antimicrobials|CNS penetration|Good: third/fourth-generation cephalosporins, high-dose penicillin G, ampicillin, vancomycin, meropenem, metronidazole, fluoroquinolones, TMP-SMX. Poor: first-generation cephalosporins, aminoglycosides, clindamycin, macrolides — never alone for meningitis.",
+"Antimicrobials|Aminoglycosides|Nephrotoxicity (usually reversible non-oliguric AKI) and ototoxicity (may be permanent, vestibular as well as cochlear). Once-daily dosing is as effective and less toxic. Monitor troughs.",
+"Antimicrobials|Vancomycin|Monitor troughs (15–20 mg/L for serious infection) and renal function. 'Red man syndrome' is an infusion-rate reaction, <b>not</b> a true allergy — slow the infusion rather than withholding the drug.",
+"Antimicrobials|Fluoroquinolone harms|Tendinopathy and rupture · QT prolongation · <b>aortic aneurysm and dissection</b> · CNS effects and seizures · dysglycaemia · peripheral neuropathy · C. difficile.",
+"Antimicrobials|Beta-lactam allergy|Most reported penicillin allergies are not real. When a beta-lactam is needed, arrange allergy testing or a graded challenge rather than defaulting to a worse agent. Delabelling improves outcomes and reduces resistance.",
+"Antimicrobials|Stewardship in one rule|Right drug, right dose, right duration. Cultures before antibiotics · review at 48–72 h · narrow on susceptibilities · stop when the course is done · convert IV to oral once stable and absorbing.",
+
+"Pulmonary|COPD categories (GOLD 2026)|A (few symptoms, low risk), B (more symptoms, low risk), <b>E</b> (high exacerbation risk — old C and D merged). A single <b>moderate exacerbation</b> now warrants considering escalation.",
+"Pulmonary|COPD maintenance|Long-acting bronchodilator first; LABA + LAMA for persistent symptoms; add an <b>inhaled corticosteroid</b> for further exacerbations — greatest benefit with eosinophils ≥300 or prior hospitalisation. ICS monotherapy is inappropriate in COPD.",
+"Pulmonary|COPD exacerbation|Oxygen to target <b>SpO₂ 88–92%</b> in CO₂ retainers. Steroids for 5 days. Antibiotics if sputum <b>purulence</b> rises or pneumonia is suspected. Non-invasive ventilation for acute hypercapnic failure reduces intubation and mortality.",
+"Pulmonary|GINA 2026 — the central change|<b>Everyone gets inhaled corticosteroid-containing treatment.</b> GINA recommends <b>against SABA-only treatment</b> at any age. Track 1 preferred: low-dose <b>ICS-formoterol</b> as an anti-inflammatory reliever, as-needed or as MART.",
+"Pulmonary|GINA 2026 — oxygen|Do <b>not</b> give supplemental oxygen unless saturation is below <b>92%</b>; if given, the upper target for adults, adolescents and children 6–11 is <b>95%</b>.",
+"Pulmonary|GINA 2026 — SABA dosing|Acute SABA doses are now <b>more conservative</b> because of over-treatment. SABA toxicity causes <b>lactic acidosis</b> with compensatory hyperventilation that mimics worsening asthma — leading to even more SABA.",
+"Pulmonary|Asthma with anaphylaxis|Give <b>epinephrine first</b>, then bronchodilators. A 2026 addition to the GINA exacerbation flowcharts.",
+"Pulmonary|CAP duration (ATS 2025)|Outpatients and non-severe inpatients who reach clinical stability → <b>less than 5 days</b> (minimum 3). Severe CAP → <b>5 or more days</b> (strong recommendation). Individualise longer for S. aureus, Pseudomonas, empyema, pregnancy, recent antibiotics.",
+"Pulmonary|CAP with a positive viral test|Outpatients <b>without</b> comorbidity → suggest <b>not</b> prescribing empiric antibiotics. Outpatients <b>with</b> comorbidity → prescribe. <b>All inpatients</b> → prescribe.",
+"Pulmonary|Pleural fluid — Light's criteria|Exudate if any one: pleural/serum protein >0.5, pleural/serum LDH >0.6, or pleural LDH >⅔ the upper limit of normal serum LDH. On diuretics, use the <b>serum-to-pleural albumin gradient</b> (>1.2 g/dL suggests transudate).",
+"Pulmonary|Pulmonary embolism workup|Wells or PERC → low/intermediate probability use <b>D-dimer</b>; high probability go <b>straight to CT angiography</b>. D-dimer is a rule-out test — do not order it when probability is already high.",
+"Pulmonary|Pulmonary embolism treatment|Anticoagulate when suspicion is high. Thrombolysis for haemodynamic instability — <b>tenecteplase may be preferred over alteplase</b> here. Duration: 3 months if provoked; longer or indefinite if unprovoked, recurrent or cancer-associated.",
+"Pulmonary|Occupational lung disease|Silicosis — upper-lobe nodules, eggshell hilar calcification, raises TB risk. Coal worker's — upper lobe, may cavitate. Berylliosis — granulomatous, mimics sarcoidosis. Asbestosis — basilar fibrosis. <b>Smoking does not raise mesothelioma risk</b> but multiplies asbestos lung cancer risk.",
+
+"Renal|CKD staging|GFR: G1 ≥90 · G2 60–89 · G3a 45–59 · G3b 30–44 · G4 15–29 · G5 <15. Albuminuria: A1 <30 · A2 30–300 · A3 >300 mg/g. Risk is graded by the <b>combination</b> — G1A3 is riskier than G3aA1.",
+"Renal|CKD drug therapy (KDIGO 2024)|<b>RAS inhibitor</b> (ACEi <b>or</b> ARB, never both) for CKD with hypertension or albuminuria. <b>SGLT2 inhibitor</b> with <b>or without</b> diabetes. <b>Finerenone</b> for type 2 diabetes with CKD. Moderate- or high-intensity statin.",
+"Renal|CKD monitoring frequency|Low risk yearly · high risk twice yearly · very high risk 3–4 times yearly. Albuminuria often changes <b>before</b> eGFR declines, so it is the earlier signal.",
+"Renal|SGLT2i in CKD|Expect a reversible <b>10–30% eGFR dip</b> — haemodynamic, not injury, and it must not prompt discontinuation. Risks: genital mycotic infection, UTI, <b>euglycaemic DKA</b> with fasting, surgery or illness — hold the drug.",
+"Renal|Sick day rules|Hold <b>RAS inhibitors, diuretics, SGLT2 inhibitors, NSAIDs and metformin</b> during vomiting, diarrhoea or acute illness. Resume once eating and drinking normally. Most preventable AKI comes from continuing these during volume depletion.",
+"Renal|Rapidly progressive GN|Declining kidney function over days to weeks with an active sediment: <b>RBC casts, dysmorphic RBCs, proteinuria</b>. Nephrology emergency — serologies (ANCA, anti-GBM, ANA, complement, ASO, hepatitis, cryoglobulins) and <b>urgent biopsy</b>.",
+"Renal|Nephrotic vs nephritic|Nephrotic: proteinuria >3.5 g/day, hypoalbuminaemia, oedema, hyperlipidaemia, bland sediment — complications are thrombosis and infection. Nephritic: active sediment with RBC casts, hypertension, oliguria.",
+"Renal|Glomerular disease patterns|Minimal change — children, nephrotic, steroid-responsive. FSGS — nephrotic, HIV, sickle cell, obesity, heroin. Membranous — adults, anti-PLA2R, malignancy association. IgA nephropathy — young adults, gross haematuria after infection. Post-streptococcal — 1–3 weeks after pharyngitis, <b>low complement</b>.",
+
+"Neuro|Thrombolysis window (2026)|Within <b>4.5 hours</b> of onset or last known well, for <b>disabling deficits regardless of NIHSS</b>, without advanced imaging selection. <b>Do not delay for CTA, MRA or perfusion imaging.</b>",
+"Neuro|Thrombolytic agent 2026|Either <b>tenecteplase 0.25 mg/kg (max 25 mg)</b> as a single bolus <b>or alteplase 0.9 mg/kg</b>. Stroke doses are not the myocardial infarction doses.",
+"Neuro|Extended-window thrombolysis|Perfusion mismatch with wake-up stroke within <b>9 hours of the midpoint of sleep</b>, or <b>4.5–9 hours</b> from last known well.",
+"Neuro|Non-disabling deficits|Isolated sensory syndrome or similar within 4.5 hours — thrombolysis has <b>failed to show benefit</b>. Use <b>dual antiplatelet therapy</b> instead.",
+"Neuro|BP after thrombolysis and thrombectomy|Intensive systolic reduction to <140 after IV thrombolysis is <b>not beneficial</b>. After successful endovascular reperfusion it is <b>harmful</b> in the first 72 hours. A real reversal of instinct.",
+"Neuro|Glucose in stroke|Do <b>not</b> target 80–130 mg/dL — no functional benefit and more severe hypoglycaemia (Class 3: No Benefit).",
+"Neuro|Antiplatelets after minor stroke|Minor non-cardioembolic stroke (NIHSS ≤5) or high-risk TIA (ABCD² ≥4) with presumed atherosclerotic cause who did not get thrombolysis: <b>DAPT clopidogrel + aspirin for 21 days</b>, then single therapy.",
+"Neuro|Thrombectomy indications|Anterior ICA or M1 within <b>6 hours</b> with NIHSS ≥6, pre-stroke mRS 0–1, ASPECTS 3–10. Selected patients 6–24 hours. <b>Basilar occlusion</b> within <b>24 hours</b> with NIHSS ≥10 and PC-ASPECTS ≥6.",
+"Neuro|Stroke mimics|Hypoglycaemia · postictal (Todd paresis) · migraine with aura · functional neurological disorder · toxic-metabolic. <b>Check glucose in every suspected stroke.</b>",
+"Neuro|Delirium vs dementia|Delirium: acute, fluctuating, <b>inattention</b> is cardinal, reversible until proven otherwise. Dementia: chronic, progressive, attention relatively preserved early. Find the cause — infection, anticholinergics, benzodiazepines, pain, retention, constipation, dehydration, withdrawal, hypoxia, electrolytes.",
+"Neuro|Delirium management|Treat the cause. Non-pharmacologic first: orientation, mobilisation, sleep hygiene, glasses and hearing aids, daylight. Reserve antipsychotics for dangerous agitation, briefly. Avoid restraints — they increase injury and duration.",
+"Neuro|Guillain-Barré|Ascending symmetrical weakness with <b>areflexia</b>, often after Campylobacter. Monitor respiratory capacity and autonomic instability. Treat with IVIG or plasma exchange. <b>Do not give corticosteroids</b> — they do not help.",
+"Neuro|Myasthenia vs Lambert-Eaton|MG: fatigable weakness worse at day's end, ptosis/diplopia, thymoma, anti-AChR antibodies, normal reflexes, decrement on repetitive stimulation. Lambert-Eaton: proximal weakness that <b>improves</b> with use, facilitated reflexes, small-cell lung cancer, increment.",
+"Neuro|Headache red flags|Thunderclap · new onset over 50 · fever or neck stiffness · focal deficit or altered consciousness · papilloedema · worse lying flat or with Valsalva · pregnancy or postpartum · cancer or immunosuppression · changed pattern in a stable headache.",
+
+"GI & Liver|Acute pancreatitis fluids (IAP 2025)|<b>Moderate</b> infusion at <b>1.5 mL/kg/hr</b>; bolus only if hypovolaemic or hypotensive (10 mL/kg). <b>Lactated Ringer preferred</b> over saline. The WATERFALL trial showed aggressive fluids caused overload (20.5% vs 6.3%) with no benefit and was stopped early.",
+"GI & Liver|Acute pancreatitis antibiotics|<b>No prophylaxis.</b> Use only for proven extrapancreatic infection or strong suspicion of infected necrotising pancreatitis. <b>Elevated CRP, WBC or procalcitonin alone should not trigger antibiotics.</b> No routine FNA, no prophylactic antifungals. Feed enterally early.",
+"GI & Liver|Gallstone pancreatitis|Perform <b>cholecystectomy during the same admission</b> for mild gallstone pancreatitis. Urgent ERCP for cholangitis or persistent biliary obstruction — not for stones alone.",
+"GI & Liver|Upper GI bleeding|Two large-bore lines, type and crossmatch, <b>restrictive transfusion</b> (threshold ~7 g/dL unless significant cardiovascular disease). IV PPI, endoscopy within 24 h. Stop NSAIDs; review anticoagulation.",
+"GI & Liver|Cirrhosis complications|Ascites: sodium restriction, spironolactone + furosemide. <b>Ascitic PMN ≥250/mm³</b> = spontaneous bacterial peritonitis — treat and give albumin. Varices: non-selective beta-blocker prophylaxis; band ligation plus octreotide and antibiotics for acute bleed. Encephalopathy: lactulose with rifaximin. <b>Avoid NSAIDs, aminoglycosides, sedatives.</b>",
+"GI & Liver|Hepatitis B serology|Acute: HBsAg + IgM anti-HBc. Chronic: HBsAg >6 months + IgG anti-HBc. Resolved: anti-HBs + IgG anti-HBc. Vaccinated: anti-HBs only, anti-HBc <b>negative</b>. The anti-HBc separates infection from vaccination.",
+"GI & Liver|Acetaminophen hepatotoxicity|Hepatotoxicity appears <b>24–72 hours</b> after ingestion — the patient looks well early. Treat with <b>N-acetylcysteine</b>, most effective within 8 hours. Rumack-Matthew nomogram for single acute ingestion; treat on suspicion for staggered or chronic.",
+"GI & Liver|Celiac disease|Test with <b>tissue transglutaminase IgA plus total IgA</b> — IgA deficiency causes false negatives. Confirm with duodenal biopsy. <b>The patient must be eating gluten for the tests to be valid.</b>",
+"GI & Liver|Colorectal surveillance|After polypectomy: 1–2 small tubular adenomas → 7–10 years; 3–10 adenomas or any high-risk feature → 3 years; >10 adenomas → consider a hereditary syndrome. Family history before age 60 in a first-degree relative → start at 40 or 10 years before their diagnosis.",
+"GI & Liver|IBS vs alarm features|Diagnose IBS clinically in a young patient without alarm features. Alarm features: age >50 with new symptoms, weight loss, rectal bleeding, anaemia, nocturnal symptoms, family history of colorectal cancer or IBD.",
+
+"Heme & Onc|Anemia classification|Microcytic (<80): iron deficiency, thalassaemia, chronic disease, lead, sideroblastic. Normocytic: acute blood loss, chronic disease, renal failure, haemolysis, aplastic. Macrocytic (>100): B12, folate, alcohol, hypothyroidism, myelodysplasia, drugs. <b>Start with the reticulocyte count.</b>",
+"Heme & Onc|Iron deficiency|Stages: depleted stores → deficient erythropoiesis → frank anaemia. <b>Ferritin</b> is the most useful test, but it is an acute phase reactant — with inflammation, check transferrin saturation or soluble transferrin receptor. In an adult, find the cause.",
+"Heme & Onc|B12 vs folate|Both cause macrocytic anaemia with hypersegmented neutrophils. <b>B12 additionally causes neurological disease</b> (subacute combined degeneration) and raises methylmalonic acid; folate does not. <b>Give B12 before or with folate</b> — folate alone can worsen the neurology.",
+"Heme & Onc|Haemolysis markers|Elevated LDH and indirect bilirubin, low haptoglobin, reticulocytosis, positive direct antiglobulin test if immune. Intravascular: transfusion reaction, G6PD after oxidant stress, PNH, TTP/HUS. Extravascular: autoimmune, hereditary spherocytosis, hypersplenism.",
+"Heme & Onc|Von Willebrand disease|The commonest inherited bleeding disorder. <b>Mucocutaneous</b> bleeding — epistaxis, menorrhagia, bruising — with normal platelets but prolonged bleeding time and often prolonged PTT. Desmopressin for mild cases; vWF concentrate for severe bleeding or surgery.",
+"Heme & Onc|Haemophilia|A = factor VIII, B = factor IX, both X-linked, with haemarthroses and deep bleeding. <b>Prolonged PTT with normal PT and platelets.</b> Factor replacement; desmopressin helps only mild haemophilia A. Avoid intramuscular injections.",
+"Heme & Onc|Paraneoplastic syndromes|SIADH and ectopic ACTH — small cell lung cancer. Hypercalcaemia — squamous cell lung cancer and myeloma. Lambert-Eaton and hypertrophic osteoarthropathy — lung cancer. Acanthosis nigricans — gastric adenocarcinoma.",
+"Heme & Onc|Leukaemia in one frame|ALL — children, bone pain, lymphadenopathy, CNS involvement. AML — adults, <b>Auer rods</b>, DIC, myeloperoxidase positive. CLL — older adults, smudge cells, autoimmune haemolysis. CML — <b>t(9;22) Philadelphia</b>, treat with a tyrosine kinase inhibitor.",
+"Heme & Onc|Tumour lysis syndrome|Hyperkalaemia, hyperphosphataemia, hyperuricaemia, hypocalcaemia with AKI after starting chemotherapy in high-burden disease. Prevent with aggressive hydration, allopurinol or rasburicase, and close electrolyte and uric acid monitoring.",
+
+"OB/GYN|HTN in pregnancy (2025)|Treat <b>chronic</b> hypertension in pregnancy to <b><140/90</b> — changed by the CHAP trial, which reduced preeclampsia with severe features, preterm birth, abruption and fetal death. NNT ≈ 15, with no adverse effect on fetal growth.",
+"OB/GYN|Severe-range BP in pregnancy|Systolic ≥160 or diastolic ≥110 confirmed within 15 minutes → lower below 160/110 <b>within 30–60 minutes</b> with <b>IV labetalol, IV hydralazine, or oral immediate-release nifedipine</b>. Magnesium sulfate for seizure prophylaxis runs in parallel.",
+"OB/GYN|Avoid in pregnancy|Atenolol · ACE inhibitors · ARBs · direct renin inhibitors · nitroprusside · mineralocorticoid receptor antagonists (Class 3: Harm).",
+"OB/GYN|Preeclampsia severe features|BP ≥160/110 · platelets <100,000 · aminotransferases >2× normal · creatinine >1.1 or doubling · pulmonary oedema · new cerebral or visual symptoms. <b>Delivery is the definitive treatment.</b>",
+"OB/GYN|Ectopic pregnancy|<b>A positive pregnancy test with abdominal pain is an ectopic until excluded.</b> Unstable → surgical emergency, do not send to radiology. Stable → quantitative beta-hCG with transvaginal ultrasound; methotrexate only for small, unruptured, stable cases meeting criteria.",
+"OB/GYN|Postpartum haemorrhage|>500 mL vaginal or >1000 mL caesarean. The <b>four Ts</b>: Tone (atony, commonest), Trauma, Tissue, Thrombin. Uterine massage, uterotonics, then escalate surgically.",
+"OB/GYN|COC contraindications|Migraine <b>with aura</b> · smoking at age ≥35 · uncontrolled hypertension · prior VTE or thrombophilia · current breast cancer · active liver disease · known ischaemic heart disease. Aura is the most commonly forgotten.",
+"OB/GYN|Abnormal uterine bleeding — PALM-COEIN|Structural: Polyp · Adenomyosis · Leiomyoma · Malignancy. Non-structural: Coagulopathy · Ovulatory dysfunction · Endometrial · Iatrogenic · Not otherwise classified. <b>Postmenopausal bleeding is endometrial cancer until proven otherwise.</b>",
+"OB/GYN|Cervical cytology follow-up|ASCUS with positive hrHPV → colposcopy; ASCUS with negative HPV → repeat in 3 years. <b>HSIL or ASC-H → colposcopy immediately</b>, with excisional treatment if confirmed.",
+"OB/GYN|Gestational diabetes|Screen at <b>24 weeks or later</b> (B). Medical nutrition therapy and glucose monitoring first; add pharmacotherapy if targets are not met (fasting <95, 1-hour <140, 2-hour <120 mg/dL). Insulin preferred when medication is needed.",
+
+"Pediatrics|Febrile neonate|Any infant under <b>28 days</b> gets a full sepsis workup and empiric antibiotics — you cannot risk-wait. Cultures before antibiotics, but never delay them in an unwell infant. Do not LP an unstable infant. Maintain glucose and temperature.",
+"Pediatrics|Kawasaki disease|Fever ≥5 days plus 4 of 5: conjunctival injection, oral changes, polymorphous rash, extremity changes, cervical lymphadenopathy. Risk of coronary aneurysm. Treat with <b>IVIG plus aspirin</b> and obtain an echocardiogram.",
+"Pediatrics|Neonatal jaundice|Physiological: appears after 24 h, peaks day 3–5, resolves by 2 weeks. Pathological: appears within 24 h, rises rapidly, or persists >2 weeks — consider haemolysis (Rh/ABO, G6PD), sepsis, hypothyroidism, biliary atresia, breast milk jaundice. Kernicterus is the feared complication.",
+"Pediatrics|Developmental milestones|Social smile 2 months · head control 4 months · sits unsupported 6–8 months · pincer grasp 9–10 months · walks independently 12–15 months · two-word phrases 18–24 months. <b>Loss of previously attained milestones is always abnormal.</b>",
+"Pediatrics|Growth failure|Weight falls first, then length, then head circumference — recovery reverses the order. Causes: inadequate intake, malabsorption, increased metabolic demand, endocrine, psychosocial.",
+"Pediatrics|Fever without a source, 29–90 days|Risk stratification by appearance, urinalysis and inflammatory markers determines the pathway. <b>UTI is the commonest serious bacterial infection</b> in this age group — a urine specimen is essential.",
+
+"Acute Care|Anaphylaxis|<b>IM epinephrine 0.3–0.5 mg (1:1000) into the anterolateral thigh, first, without delay.</b> Repeat every 5–15 minutes. Position supine with legs elevated. Antihistamines and steroids do <b>not</b> treat the airway emergency. Discharge with auto-injectors and allergy referral.",
+"Acute Care|Alcohol withdrawal|Benzodiazepines are first-line, guided by CIWA. Give <b>thiamine before or with glucose</b> to prevent Wernicke encephalopathy. Monitor for delirium tremens, hypomagnesaemia, hypophosphataemia, hypokalaemia. Symptom-triggered uses less drug than fixed-dose.",
+"Acute Care|Opioid overdose and OUD|Overdose: naloxone, support ventilation, monitor for recurrent toxicity — naloxone's half-life is shorter than most opioids. OUD: <b>buprenorphine/naloxone or methadone</b> are first-line and outperform detoxification alone. Start in the ED rather than giving a referral alone. Always prescribe take-home naloxone.",
+"Acute Care|Toxidromes|Anticholinergic: hot, dry, mydriasis, retention, delirium. Cholinergic (SLUDGE): salivation, lacrimation, urination, diarrhoea, GI upset, emesis — atropine and pralidoxime. Opioid: pinpoint pupils, respiratory depression — naloxone. Sympathomimetic: tachycardia, hypertension, diaphoresis, agitation.",
+"Acute Care|Methanol and ethylene glycol|Both cause severe high-gap metabolic acidosis with an <b>osmolal gap</b>. Methanol → visual symptoms and blindness. Ethylene glycol → <b>calcium oxalate crystals in urine</b>, renal failure, hypocalcaemia. Treat with fomepizole and dialysis.",
+"Acute Care|Salicylate toxicity|Tinnitus, tachypnoea, and a <b>mixed disorder — anion gap metabolic acidosis with respiratory alkalosis</b>. Treat with IV fluids and <b>urinary alkalinisation</b>. Dialysis for severe cases. Do not rely on the level alone with delayed-release ingestion.",
+"Acute Care|Rhabdomyolysis|Muscle pain, weakness, dark urine with markedly elevated creatine kinase. Causes: crush, immobilisation, seizures, statins, stimulants, exertional heat injury. Treat with <b>aggressive IV fluids</b>; watch for hyperkalaemia, hyperphosphataemia, hypocalcaemia, compartment syndrome.",
+"Acute Care|Trauma primary survey|ABCDE — Airway with c-spine control, Breathing, Circulation with haemorrhage control, Disability (GCS, pupils), Exposure with temperature control. <b>Haemorrhage is the leading cause of preventable death</b> — control bleeding before imaging.",
+"Acute Care|Massive transfusion|Balanced resuscitation — red cells, plasma and platelets in roughly equal proportions — rather than crystalloid. Give <b>tranexamic acid</b> early in traumatic haemorrhage. Keep the patient <b>warm</b>; the lethal triad is hypothermia, acidosis, coagulopathy.",
+"Acute Care|Malignant hyperthermia|Hyperthermia, masseter and generalised rigidity, hypercapnia, tachycardia, rhabdomyolysis after volatile anaesthetics or succinylcholine. Treat with <b>dantrolene</b>, stop the trigger, hyperventilate with 100% oxygen.",
+
+"Ambulatory|Preventive visit framework|Counselling · immunisation · screening · follow-up. Missed exam points are almost always in these four buckets, not in diagnosis. <b>A follow-up appointment scheduled at the visit is a scored action.</b>",
+"Ambulatory|Low back pain|Red flags: age <20 or >50 with new onset, trauma, cancer history, weight loss, fever, IV drug use, night pain, neurological deficit, saddle anaesthesia, bowel or bladder dysfunction. <b>Absent red flags, no imaging in the first 4–6 weeks.</b>",
+"Ambulatory|Cauda equina|Saddle anaesthesia, bowel or bladder dysfunction, bilateral leg symptoms, progressive deficit. <b>Surgical emergency requiring urgent MRI.</b>",
+"Ambulatory|Uncomplicated cystitis|Nitrofurantoin 5 days, TMP-SMX 3 days (where resistance <20%), or fosfomycin single dose. <b>Do not use nitrofurantoin for pyelonephritis</b> — inadequate tissue levels. Avoid fluoroquinolones first-line.",
+"Ambulatory|Asymptomatic bacteriuria|Treat <b>only</b> in pregnancy and before urological procedures with mucosal trauma. Treating it otherwise causes harm without benefit.",
+"Ambulatory|Obesity management|BMI ≥30, or ≥25 with risk factors. Intensive multicomponent behavioural intervention (>6 months, ≥14 sessions) as the foundation, plus pharmacotherapy based on comorbidity, cost and access. Metabolic surgery for BMI ≥35 with comorbidity or ≥40.",
+"Ambulatory|Opioid prescribing|Check the prescription drug monitoring programme and assess risk. <b>Never stop opioids abruptly</b> in a patient on long-term therapy — taper. In an acute painful crisis with chronic opioid use, the dose usually needs to <b>increase</b> because tolerance is present.",
+"Ambulatory|Prediabetes|Screen adults 35–70 with overweight or obesity and <b>refer to a structured preventive programme</b> — lifestyle intervention reduced progression more than medication in the Diabetes Prevention Program. Metformin for the highest risk (age <60, BMI ≥35, prior gestational diabetes).",
+
+"Psychiatry|Depression treatment|Mild to moderate → psychotherapy, particularly CBT, first-line. Moderate to severe, or no access to therapy → antidepressant, often combined. <b>Follow up within 2–4 weeks</b> of starting or changing medication, and watch for activation or emerging suicidality early.",
+"Psychiatry|Serotonin syndrome vs NMS|Serotonin syndrome: hyperthermia, hyperreflexia, <b>clonus</b>, mydriasis, agitation, onset within 24 h of a serotonergic agent. NMS: hyperthermia, <b>lead-pipe rigidity</b>, bradyreflexia, autonomic instability, raised CK, onset over days. <b>Clonus vs rigidity is the fastest discriminator.</b>",
+"Psychiatry|Antipsychotic monitoring|Metabolic: weight, glucose, lipids. Extrapyramidal: acute dystonia, akathisia, parkinsonism, tardive dyskinesia. Hormonal: hyperprolactinaemia with risperidone. Cardiac: QT prolongation with ziprasidone and haloperidol. Clozapine needs regular blood monitoring.",
+"Psychiatry|Mood stabilisers in pregnancy|Lithium carries a cardiac risk (Ebstein anomaly), though the absolute risk is lower than often feared — do not stop abruptly. <b>Valproate is the most teratogenic</b> and is generally avoided in anyone who could become pregnant. Carbamazepine is also teratogenic.",
+"Psychiatry|Panic disorder|SSRIs are first-line plus CBT with interoceptive exposure. <b>Avoid benzodiazepines as the primary treatment</b> because of dependence. Beta-blockers do not treat panic disorder.",
+"Psychiatry|Bipolar vs unipolar depression|Clues to bipolarity: early onset, family history of bipolar disorder, prior mania or hypomania, postpartum psychosis, antidepressant-induced agitation or rapid cycling. Treating bipolar depression with an antidepressant alone can precipitate mania.",
+"Psychiatry|Alcohol use disorder drugs|Naltrexone reduces heavy drinking and is often the best single agent. Acamprosate supports abstinence. Disulfiram works only with supervision and commitment. Topiramate and gabapentin are off-label.",
+
+"Pharm Safety|Renally cleared drugs needing adjustment|Aminoglycosides · vancomycin · most <b>DOACs</b> · enoxaparin · gabapentin/pregabalin · metformin · nitrofurantoin · most antivirals. Nitrofurantoin and metformin should generally be avoided at low eGFR.",
+"Pharm Safety|NSAID harm profile|Kidney: afferent arteriolar constriction → AKI, especially with a RAS inhibitor plus a diuretic (the 'triple whammy'). GI: bleeding. Cardiovascular: raised MI and stroke risk — <b>avoid in heart failure and after recent MI</b>. Avoid after 20 weeks of pregnancy.",
+"Pharm Safety|Warfarin interactions|Antibiotics disrupt gut flora and vitamin K. <b>Amiodarone</b> inhibits warfarin metabolism — anticipate a dose reduction. <b>TMP-SMX</b> is a potent potentiator. NSAIDs and antiplatelets raise bleeding risk independent of INR.",
+"Pharm Safety|Reversal agents|Warfarin → vitamin K plus <b>4-factor PCC</b> for life-threatening bleeding. Dabigatran → <b>idarucizumab</b>. Apixaban/rivaroxaban → andexanet alfa, or PCC where unavailable. Heparin → protamine (full for UFH, partial for LMWH).",
+"Pharm Safety|Drugs to avoid in heart failure|NSAIDs and COX-2 inhibitors · non-dihydropyridine calcium channel blockers (verapamil, diltiazem) · thiazolidinediones. Also check effervescent preparations — a hidden sodium load.",
+"Pharm Safety|Beers criteria highlights|Benzodiazepines (falls, delirium) · anticholinergics including diphenhydramine and oxybutynin · glyburide (prolonged hypoglycaemia) · NSAIDs · muscle relaxants. <b>Cumulative anticholinergic burden matters more than any single drug.</b>",
+"Pharm Safety|CYP450 essentials|3A4 inhibitors (macrolides, azoles, grapefruit, ritonavir) raise statin and tacrolimus levels. Inducers (rifampin, carbamazepine, phenytoin, St John's wort) lower them — and cause oral contraceptive failure. 2C9 handles warfarin. 2D6 converts codeine to morphine — poor metabolisers get no relief, ultrarapid metabolisers risk toxicity.",
+"Pharm Safety|QT prolongation|Antiarrhythmics (sotalol, dofetilide) · antipsychotics (haloperidol, ziprasidone) · citalopram at high dose and TCAs · macrolides and fluoroquinolones · azoles · ondansetron and droperidol · methadone. Risk multiplies with hypokalaemia, hypomagnesaemia, bradycardia and combinations.",
+"Pharm Safety|Statin adverse effects|Muscle symptoms are common; true myopathy is uncommon and rhabdomyolysis rare. Check CK with significant weakness or pain. <b>Immune-mediated necrotising myopathy</b> presents with proximal weakness and persistently elevated CK that does not improve off the drug — needs immunosuppression."
+];
+var CD=[];C.forEach(function(s){var a=s.split('|');CD.push({d:a[0],q:a[1],a:a.slice(2).join('|')})});
+var DECKS=[];CD.forEach(function(c){if(DECKS.indexOf(c.d)<0)DECKS.push(c.d)});
+
+/* CCS */
+var PH=[{k:'safety',l:'Safety bundle',w:.3,f:0,t:.08,c:'#fb7185',h:'First 60 s: IV access, monitor, pulse ox, O2 if hypoxaemic, fingerstick glucose, ABCs. Emergency orders before a full exam.'},
+{k:'workup',l:'Focused workup',w:.25,f:.08,t:.32,c:'#7c83ff',h:'Targeted exam, then least-invasive high-yield tests. Write a one-line working diagnosis before you order.'},
+{k:'treat',l:'Treat + advance',w:.25,f:.32,t:.58,c:'#2dd4bf',h:'Start the treatment that must not wait. Advance the clock in short hops — treat and diagnose in the same pass.'},
+{k:'monitor',l:'Reassess',w:.1,f:.58,t:.88,c:'#38bdf8',h:'Recheck vitals, interval exam, repeat key labs. Hidden points live here.'},
+{k:'close',l:'Closure',w:.1,f:.88,t:1,c:'#34d399',h:'The 2-minute screen: disposition, follow-up scheduled, counselling, prevention, future labs, stop anything unnecessary.'}];
+var R=[
+"acs~Chest pain — ACS~ED~20~58M, 45 min substernal pressure radiating to the left arm, diaphoresis, nausea. HR 104, BP 148/92, SpO2 94%.~ECG within 10 min, before anything deferrable; STEMI → activate reperfusion while troponin is pending; hold nitrates if hypotensive or right-sided~IV access;Cardiac monitor;Pulse oximetry;O2 if SpO2 <90%;Chewable aspirin;12-lead ECG now~Serial troponins;CBC;BMP;Chest radiograph;Lipid panel;Echocardiogram~Antiplatelet per ACS pathway;Anticoagulation;Nitrates if BP permits;Beta-blocker once stable;High-intensity statin;Analgesia~Repeat ECG with any change;Recheck troponin serially;Continuous telemetry;Reassess pain and haemodynamics~Cardiology consult;Risk stratification for invasive management;Admit to monitored bed;Counselling: smoking, adherence, cardiac rehab;Follow-up scheduled;Risk factors managed at discharge",
+"pe~Chest pain — pulmonary embolism~ED~20~46F, 3 days pleuritic chest pain and dyspnoea after a long-haul flight, on a combined OC. HR 118, BP 108/70, SpO2 89%. Right calf tender and swollen.~Pre-test probability, not shotgun ordering; unstable PE is a thrombolysis problem not an imaging problem; anticoagulate empirically when suspicion is high; tenecteplase may be preferred if thrombolysis needed~IV access;Cardiac monitor;Pulse oximetry;Supplemental O2;Fingerstick glucose;Assess haemodynamic stability~D-dimer if low probability;CT pulmonary angiography;CBC;BMP;Coagulation studies;Lower-limb venous ultrasound;ECG for right heart strain~Anticoagulation when suspicion is high;Fluids and vasopressors if hypotensive;Thrombolysis if unstable;Stop the oral contraceptive~Recheck vitals and oxygenation;Monitor for bleeding;Assess for right heart failure~Admit to monitored bed;Pulmonary or critical care consult;Anticoagulation duration decided and explained;Counselling: VTE risk factors, contraceptive change;Follow-up scheduled",
+"sepsis~Sepsis / undifferentiated shock~ED~20~71M from a nursing home, 2 days fever and confusion. HR 126, BP 84/52, RR 28, T 39.2, lactate 4.2. Dry mucous membranes, diffuse abdominal tenderness.~At least 30 mL/kg crystalloid in 3 h but reassess for overload; antibiotics within 1 h in shock; norepinephrine first-line, MAP 60–65 if ≥65 years, may start peripherally; crystalloid alone — 2026 drops albumin~Two large-bore IV lines;Cardiac monitor;Pulse oximetry;O2 if hypoxaemic;Fingerstick glucose;Blood cultures before antibiotics;Lactate;Isotonic crystalloid ≥30 mL/kg over 3 h~CBC;BMP;Urinalysis and culture;Chest radiograph;Coagulation studies;Source imaging as indicated~Broad-spectrum antibiotics within 1 h;Continue crystalloid with frequent reassessment;Norepinephrine for fluid-refractory hypotension;Source control;Add vasopressin with escalating norepinephrine~Recheck lactate and MAP;Urine output;Reassess perfusion and mental status;BP monitoring — invasive or non-invasive~ICU within 6 h if required;De-escalate on culture data;Consider fluid removal after resuscitation if overloaded;Family counselling on goals of care;Vaccination review;Aspiration and pressure-injury precautions",
+"chf~Acute decompensated heart failure~ED~20~74F, 2 days progressive dyspnoea, orthopnoea and PND. HR 112, BP 168/94, RR 26, SpO2 86%. Bibasilar crackles, raised JVP, 2+ pitting oedema.~Sit upright and oxygenate while placing orders; always hunt the precipitant — ischaemia, infection, arrhythmia, diet, NSAIDs, non-adherence; SGLT2i can start before discharge once stable~IV access;Cardiac monitor;Pulse oximetry;O2 to target SpO2 >90%;Position upright;Fingerstick glucose~BNP;ECG;Chest radiograph;CBC;BMP including K and creatinine;Troponin;Echocardiogram~IV loop diuretic;Nitrates if BP allows;Strict intake/output and fluid restriction;Daily weights;Non-invasive ventilation if in respiratory failure~Recheck vitals and respiratory status;Repeat BMP for K and renal function;Reassess after diuresis;Telemetry~Treat the precipitant;Transition to oral diuretic;Discharge with daily-weight instructions and a scheduled follow-up;Sodium restriction and adherence counselling;Influenza and pneumococcal vaccination;Optimise GDMT before discharge — all four pillars for HFrEF",
+"copd~COPD exacerbation~ED~20~63M with COPD, 3 days worsening dyspnoea, cough and increased sputum purulence. HR 108, RR 30, SpO2 88%, T 38.1. Diffuse wheeze, accessory muscle use.~Target SpO2 88–92% in CO2 retainers — over-oxygenation worsens hypercapnia; steroids and bronchodilators in the same pass as the workup; purulence with fever supports antibiotics; GOLD 2026 — one moderate exacerbation now warrants escalation~IV access;Cardiac monitor;Pulse oximetry;Controlled O2 targeting 88–92%;Fingerstick glucose~Chest radiograph;CBC;BMP;ABG if severe or deteriorating;Sputum culture if purulent~Nebulised SABA;Ipratropium;Systemic corticosteroids for 5 days;Antibiotics if increased purulence or suspected pneumonia;Non-invasive ventilation if failing;Magnesium for severe exacerbation~Recheck RR, SpO2 and work of breathing;Repeat ABG if deteriorating;Monitor CO2 retention;Avoid over-sedation~Admit or discharge by response and function;Ensure LABA or LAMA maintenance;Add or optimise ICS if eosinophilic or exacerbation-prone;Smoking cessation;Influenza, pneumococcal and RSV vaccination;Follow-up and written action plan",
+"ams~Altered mental status~ED~20~68F brought in by family for confusion starting this morning. HR 96, BP 154/88, T 37.6, SpO2 96%. Disoriented, no focal deficit, dry skin. On oxybutynin and diphenhydramine.~Fingerstick glucose and a focused neuro exam in the first minute; assume infection, drugs or metabolic derangement until excluded; anticholinergic burden is a hugely under-recognised cause of delirium~Airway assessment;IV access;Cardiac monitor;Pulse oximetry;Fingerstick glucose;O2 if hypoxaemic~CBC;BMP including calcium and sodium;Ammonia;Urinalysis and culture;TSH;Toxicology screen;Blood cultures if febrile;Head CT if focal deficit, trauma, or anticoagulation~Treat the identified reversible cause;Thiamine before glucose if malnourished;Fluids for dehydration;Antibiotics if infection suspected;Stop or reduce culprit medications;Non-pharmacologic delirium measures~Recheck mental status each interval;Repeat key labs;Neurological checks for change;Orientation, mobilisation, sleep hygiene, glasses and hearing aids~Admit if cause unclear or the patient is unsafe;Medication review and reduce anticholinergic burden;Family and caregiver counselling;Follow-up scheduled;Falls assessment;Driving discussion;Safety review",
+"gib~Upper gastrointestinal bleeding~ED~20~57M with melena and light-headedness, known alcohol and chronic NSAID use. HR 118, BP 96/60, SpO2 97%. Pale conjunctivae, epigastric tenderness, no ascites.~Two large-bore lines and type-and-crossmatch before endoscopy; resuscitate before scoping — an unstable patient cannot be scoped; restrictive transfusion around Hb 7 unless significant cardiovascular disease~Two large-bore IV lines;Cardiac monitor;Pulse oximetry;O2 as needed;Type and crossmatch;Isotonic fluid resuscitation~CBC;BMP;Coagulation studies;Liver function tests;Nasogastric lavage if level unclear;Upper endoscopy~Blood products per restrictive threshold;IV proton pump inhibitor;Stop NSAIDs and review anticoagulation;Octreotide and antibiotics if variceal bleeding suspected;Endoscopic hemostasis;Balloon tamponade or TIPS if refractory~Recheck Hb and vitals;Urine output and mental status as perfusion markers;Watch for rebleeding;Rising lactate with worsening exam may signal perforation~Admit to monitored bed;Gastroenterology consult for endoscopy;Discharge on oral PPI with H. pylori testing if indicated;Counselling: NSAID and alcohol avoidance;Follow-up;Iron repletion",
+"panc~Acute pancreatitis~ED~20~48F with 12 h severe epigastric pain radiating to the back, nausea and vomiting after a large meal. HR 104, BP 132/80, T 38.0. Epigastric tenderness, no peritoneal signs.~MODERATE fluids 1.5 mL/kg/hr with lactated Ringer — aggressive hydration caused overload without benefit in WATERFALL and was stopped early; NO prophylactic antibiotics and inflammatory markers alone do not justify them; feed early; cholecystectomy in the same admission if gallstone-related~IV access;Cardiac monitor;Pulse oximetry;Lactated Ringer at 1.5 mL/kg/hr;Fingerstick glucose;O2 if hypoxaemic~Lipase;CBC;BMP;Liver function tests;Triglycerides;Abdominal ultrasound for gallstones;CT if severe or deteriorating~Moderate IV fluids with lactated Ringer;Analgesia — opioids acceptable;Antiemetics;Early enteral nutrition;Antibiotics ONLY for proven infection or suspected infected necrosis;ERCP if cholangitis or persistent obstruction~Recheck vitals and urine output;Serial abdominal exam;Recheck BUN, haematocrit and electrolytes;Watch for hypocalcaemia and hypoxaemia~Admit, ICU if severe;Gastroenterology or surgery consult;Cholecystectomy during the SAME admission if gallstone-related;Alcohol cessation counselling;Follow-up scheduled;Nutrition review and indicated vaccinations",
+"dka~Diabetic ketoacidosis~ED~20~22M with type 1 diabetes, 2 days vomiting and abdominal pain, missed insulin while unwell. HR 124, BP 102/64, RR 30 deep, glucose 512, K+ 4.9, pH 7.12, HCO3 9. Fruity breath.~Fluids first, then check potassium before insulin; K+ <3.5 → replace at 10 mmol/hr and HOLD insulin until >3.5 (insulin shifts K intracellularly — fatal arrhythmia risk); bicarbonate only if pH <7.0; add dextrose once glucose <250 so insulin continues until ketones clear~IV access;Cardiac monitor;Pulse oximetry;Isotonic or balanced crystalloid 500–1000 mL/hr for 2–4 h;Check potassium before insulin;Smaller 250 mL boluses if older or cardiac/renal disease~BMP with anion gap;Beta-hydroxybutyrate;ABG or venous pH;CBC;Urinalysis and culture;ECG;Pregnancy test if applicable~Balanced crystalloid resuscitation;IV insulin 0.1 units/kg/hr once K+ >3.3–3.5;Potassium replacement when K+ <5.0 targeting 4–5;Dextrose 5–10% when glucose <250;Bicarbonate only if pH <7.0;Identify and treat the precipitant~Glucose every 1–2 h;Electrolytes, phosphate, creatinine, beta-hydroxybutyrate and pH every 4 h;Potassium 2 h after starting insulin then every 4 h;Neurological checks~ICU for severe DKA (pH <7.0, HCO3 <10, beta-hydroxybutyrate >6, or altered mental status);Basal insulin 1–2 h before stopping the drip;Total daily dose 0.3–0.6 units/kg/day;Diabetes education and sick-day rules;Endocrinology or diabetes educator follow-up;Retinal and renal screening;Foot care",
+"stroke~Acute ischaemic stroke~ED~20~66M with sudden right-sided weakness and expressive aphasia beginning 40 min ago. HR 88 irregular, BP 186/98, SpO2 97%. Dense right hemiparesis and dysarthria. Last known well clearly established.~Establish last known well FIRST; fingerstick glucose and non-contrast head CT before anything else; do NOT delay thrombolysis for CTA, MRA or perfusion imaging — tenecteplase 0.25 mg/kg (max 25) or alteplase 0.9 mg/kg, either is acceptable; do NOT drive systolic <140 after thrombolysis, and after successful thrombectomy it is HARMFUL~Airway assessment;IV access;Cardiac monitor;Pulse oximetry;Fingerstick glucose;Establish last known well time;Non-contrast head CT immediately~CBC;BMP;Coagulation studies including INR;ECG for atrial fibrillation;CT angiography of head and neck;CT perfusion if a late-window candidate;NIH Stroke Scale~IV thrombolysis within 4.5 h for disabling deficits regardless of NIHSS;Tenecteplase 0.25 mg/kg (max 25 mg) or alteplase 0.9 mg/kg;Mechanical thrombectomy referral for large-vessel occlusion;BP per thrombolysis protocol;NPO with dysphagia precautions;Aspirin per the appropriate post-thrombolysis timeline~Frequent neurological checks;Serial blood pressure;Recheck glucose — do NOT target 80–130;Watch for haemorrhagic transformation~Admit to the stroke unit;Neurology consult and interventional radiology if thrombectomy;Speech and swallow evaluation;Rehabilitation planning;Risk factor counselling;Follow-up scheduled;BP to <130/80, statin, antithrombotic choice, smoking cessation",
+"preec~Preeclampsia with severe features~ED / OB~20~31F at 34 weeks with severe headache and right upper quadrant pain. BP 168/112, reflexes brisk with clonus, 2+ proteinuria. Fetal heart tones reassuring.~Magnesium sulfate for seizure prophylaxis is the first priority; severe-range BP must come below 160/110 within 30–60 min with IV labetalol, IV hydralazine, or oral immediate-release nifedipine; delivery is the definitive treatment — consult obstetrics now; have calcium gluconate at the bedside~IV access;Cardiac monitor;Pulse oximetry;Fingerstick glucose;Fetal monitoring;Continuous blood pressure monitoring~CBC with platelets;Liver function tests;BMP including creatinine;Urine protein quantification;Coagulation studies;Blood type and screen~Magnesium sulfate infusion for seizure prophylaxis;IV labetalol or hydralazine or oral nifedipine for severe-range BP;Obstetric consultation for delivery planning;Continuous fetal monitoring;Calcium gluconate available~Recheck BP frequently;Monitor reflexes and respiratory rate for magnesium toxicity;Repeat platelets and liver enzymes;Track urine output~Delivery planning with obstetrics — the definitive treatment;Postpartum monitoring — disease can worsen after delivery;Counsel on future pregnancy risk and interpregnancy interval;Scheduled postpartum follow-up;BP follow-up and low-dose aspirin in future pregnancies",
+"prev~Adult preventive health visit~Clinic~10~58M for a routine preventive visit. No acute complaints. Last visit 4 years ago. BP 132/84, BMI 29. Smoked 22 pack-years, quit 4 years ago. No screening or immunisations documented.~The 2-minute screen is the whole case: counselling, vaccines, screening, follow-up; 22 pack-years with quitting only 4 years ago makes him eligible for low-dose CT lung screening NOW and until 15 years after quitting; a follow-up appointment scheduled at the visit is a scored action~Complete history and review of systems;Blood pressure and BMI;Medication and immunisation review;Screen for tobacco and alcohol use~Fasting lipid panel;Fasting glucose or A1c;Colorectal cancer screening — eligible at 58;Low-dose CT lung screening — eligible now;AAA ultrasound if 65–75 and ever smoked;Immunisation review: influenza, Td/Tdap q10y, pneumococcal at 50+, zoster at 50+, RSV at 75+ or 50–74 with risk factors~Smoking cessation — maintain abstinence, 5 A's;Diet and physical activity counselling;Alcohol screening with brief intervention;Statin based on 10-year ASCVD risk by PREVENT;Depression screening with PHQ-2/9~Schedule lab and screening follow-up;Confirm screening completion and results review;Document the interval plan~Follow-up appointment scheduled for results and reassessment;Referrals for incomplete screening;Documented counselling: tobacco, alcohol, diet, activity, safety;Full immunisation review with administration as indicated;Advance care planning discussion",
+"dm~Uncontrolled type 2 diabetes — follow-up~Clinic~10~54M with type 2 diabetes. A1c 9.4%, BMI 32, BP 148/88. On metformin 1000 mg twice daily. Fatigue and nocturia, no hypoglycaemia. eGFR 72, urine albumin-to-creatinine ratio 45 mg/g.~A1c 9.4% with an albumin-to-creatinine ratio of 45 mg/g is a cardiorenal indication — add an SGLT2 inhibitor irrespective of A1c and independent of metformin; screen for the silent complications at every control visit; set a staged follow-up plan rather than 'return as needed'~Focused history and review of systems;Medication review and adherence assessment;Blood pressure with correct technique and weight~Haemoglobin A1c;Fasting lipid panel;BMP with creatinine and eGFR;Urine albumin-to-creatinine ratio;Dilated retinal examination referral;Foot examination~Add an SGLT2 inhibitor for the albuminuria irrespective of A1c;Continue metformin if renal function permits;BP to target <130/80 with an ACEi or ARB for the albuminuria;Moderate-intensity statin to LDL-C <100 and non-HDL-C <130;Consider a GLP-1 agent if weight and ASCVD risk warrant;Nutrition and exercise counselling~Home glucose or CGM monitoring;Repeat A1c in about 3 months;Renal function and potassium after changes;Review hypoglycaemia and adherence~Diabetes education and nutrition referral;Dilated eye examination referral documented;Follow-up in about 3 months — sooner after starting the SGLT2 inhibitor;Adherence, self-monitoring, foot care, sick-day rules;Influenza, pneumococcal, hepatitis B and COVID vaccination;Screen for depression and smoking"
+];
+function SL(x){return x.split(';').map(function(y){return y.trim()}).filter(Boolean)}
+var CC=R.map(function(s){var a=s.split('~');return{id:a[0],n:a[1],set:a[2],lim:+a[3],p:a[4],pl:SL(a[5]),
+safety:SL(a[6]),workup:SL(a[7]),treat:SL(a[8]),monitor:SL(a[9]),close:SL(a[10])}});
+
+var DAY=864e5;
+function pk(i){return CD[i].d+'|'+CD[i].q}
+(function(){var ch=false;for(var i=0;i<CD.length;i++){var o='k'+i;if(S.p[o]){if(!S.p[pk(i)])S.p[pk(i)]=S.p[o];delete S.p[o];ch=true}}if(ch)save()})();
+function gp(i){if(!S.p[pk(i)])S.p[pk(i)]={iv:0,e:2.5,due:0,r:0,l:0};return S.p[pk(i)]}
+function due(i){var p=S.p[pk(i)];return!p||p.due<=Date.now()}
+function grade(i,g){var p=gp(i);p.r++;S.rev++;
+ if(g===0){p.l++;p.e=Math.max(1.3,p.e-.2);p.iv=0;p.due=Date.now()+6e4}
+ else if(g===1){p.e=Math.max(1.3,p.e-.15);p.iv=Math.max(1,Math.round(p.iv*1.2)||1);p.due=Date.now()+p.iv*DAY}
+ else if(g===2){p.iv=p.iv===0?1:Math.round(p.iv*p.e);p.due=Date.now()+p.iv*DAY}
+ else{p.e=Math.min(3.2,p.e+.15);p.iv=p.iv===0?3:Math.round(p.iv*p.e*1.3);p.due=Date.now()+p.iv*DAY}
+ save()}
+
+var V='cards',df=-1,mode='due',cur=null,cc=null,chk={},tsec=0,tid=null,trun=false,seen={},rt=null;
+function hdr(){var m={cards:['Cards','Tap to flip, then grade honestly.'],ccs:['CCS Cases','13–14 simulations close Day 2, capped at 10 or 20 minutes each.'],info:['Info','Install, export, and sources.']}[V];
+document.getElementById('top').innerHTML='<h1>'+m[0]+'</h1><div class="s">'+m[1]+'</div>'}
+function go(v){V=v;document.querySelectorAll('.nav b').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)});
+document.getElementById('vs').innerHTML='';hdr();window.scrollTo(0,0);
+if(v==='cards')rCards();if(v==='ccs')rCCS();if(v==='info')rInfo()}
+document.querySelectorAll('.nav b').forEach(function(b){b.onclick=function(){go(b.dataset.v)}});
+
+function queue(){var q=[];
+ for(var i=0;i<CD.length;i++){if(df>=0&&CD[i].d!==DECKS[df])continue;
+  if(mode==='due'&&!due(i))continue;if(mode==='all'&&seen[i])continue;q.push(i)}
+ if(mode==='all')return q;
+ q.sort(function(a,b){var pa=S.p[pk(a)]||{l:0,iv:0},pb=S.p[pk(b)]||{l:0,iv:0};
+  if((pb.l||0)!==(pa.l||0))return(pb.l||0)-(pa.l||0);return(pa.iv||0)-(pb.iv||0)});
+ return q}
+function rCards(){
+ var q=queue(),dc=0,ms=0;
+ for(var i=0;i<CD.length;i++){if(df>=0&&CD[i].d!==DECKS[df])continue;
+  var p=S.p[pk(i)];if(p&&p.iv>=21)ms++;if(due(i))dc++}
+ var h='<div class="tiles"><div class="tile"><div class="l">Due</div><div class="n">'+dc+'</div></div>'+
+ '<div class="tile"><div class="l">Reviews</div><div class="n">'+(S.rev||0)+'</div></div>'+
+ '<div class="tile"><div class="l">Mastered</div><div class="n">'+ms+'</div></div></div>';
+ h+='<div class="card"><div class="row"><select id="fd" style="flex:2">'+
+ '<option value="-1">All decks ('+CD.length+' cards)</option>'+
+ DECKS.map(function(d,ix){var n=CD.filter(function(c){return c.d===d}).length;
+  return '<option value="'+ix+'"'+(df===ix?' selected':'')+'>'+d+' ('+n+')</option>'}).join('')+
+ '</select><select id="fm" style="flex:1"><option value="due"'+(mode==='due'?' selected':'')+'>Due</option>'+
+ '<option value="all"'+(mode==='all'?' selected':'')+'>All</option></select></div></div>';
+ clearTimeout(rt);
+ cur=null;
+ if(!q.length){if(mode==='all'){h+='<div class="card"><p style="color:var(--g);margin:0 0 5px;font-weight:650">You went through every card in this deck.</p>'+
+ '<button class="btn g s" id="ag">Go through again</button></div>'}else{var nx=Infinity,nc=0;
+  for(var j=0;j<CD.length;j++){if(df>=0&&CD[j].d!==DECKS[df])continue;var pp=S.p[pk(j)];if(pp&&pp.due-Date.now()<36e5){nc++;nx=Math.min(nx,pp.due)}}
+  h+='<div class="card"><p style="color:var(--g);margin:0 0 5px;font-weight:650">Queue clear.</p>'+
+  (nc?'<p class="sm d" style="margin:0 0 5px">'+nc+' card'+(nc>1?'s':'')+' you marked <b>Again</b> will come back in about '+Math.max(1,Math.ceil((nx-Date.now())/6e4))+' min.</p>':'')+
+  '<p class="sm d" style="margin:0">Switch to <b>All</b> to browse every card in this deck.</p></div>';
+  if(nc)rt=setTimeout(function(){if(V==='cards')rCards()},Math.max(1000,nx-Date.now()+500))}}
+ else{cur=q[0];var c=CD[cur];
+  h+='<div class="fw"><div class="fc" id="fc"><div class="fa"><div class="pill t">'+c.d+'</div>'+
+  '<div class="q" style="margin-top:10px">'+c.q+'</div><div class="h">tap to flip</div></div>'+
+  '<div class="fa b"><div class="pill t">'+c.d+'</div><div class="a" style="margin-top:10px">'+c.a+'</div>'+
+  '<div class="h">'+E(c.q)+'</div></div></div></div>'+
+  '<div class="g4" id="gr" style="display:none">'+
+  '<button data-g="0">Again<em>reset</em></button><button data-g="1">Hard<em>slow</em></button>'+
+  '<button data-g="2">Got it<em>normal</em></button><button data-g="3">Easy<em>fast</em></button></div>'+
+  '<p class="xs d" style="text-align:center;margin:8px 0 0">'+q.length+' card'+(q.length>1?'s':'')+' in this queue</p>'}
+ document.getElementById('vs').innerHTML=h;
+ var fd=document.getElementById('fd');if(fd)fd.onchange=function(){df=+fd.value;seen={};rCards()};
+ var fm=document.getElementById('fm');if(fm)fm.onchange=function(){mode=fm.value;seen={};rCards()};
+ var ag=document.getElementById('ag');if(ag)ag.onclick=function(){seen={};rCards()};
+ var fc=document.getElementById('fc');if(fc)fc.onclick=function(){fc.classList.add('fl');document.getElementById('gr').style.display='grid'};
+ document.querySelectorAll('#gr button').forEach(function(b){b.onclick=function(){doGrade(+b.dataset.g)}});
+}
+function doGrade(g){if(cur===null)return;grade(cur,g);if(mode==='all')seen[cur]=true;rCards()}
+document.addEventListener('keydown',function(e){if(V!=='cards'||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;var fc=document.getElementById('fc');if(!fc)return;
+ if((e.key===' '||e.key==='Enter')&&!fc.classList.contains('fl')){e.preventDefault();fc.click()}
+ else if(fc.classList.contains('fl')&&/^[1-4]$/.test(e.key)){doGrade(+e.key-1)}});
+function rCCS(){
+ if(!cc){
+  var h='<div class="card"><h3>How CCS scores</h3><p class="sm d" style="margin:0 0 8px">Each case runs on a simulated clock. <b>Nothing happens until you advance time</b>, and you choose the interval — advance in short hops and reassess. Your orders are judged across diagnosis, treatment and monitoring. Disposition and follow-up count, so schedule the appointment and add the counselling.</p><p class="sm d" style="margin:0">Score yourself against the checklist, then log the attempt to track which category keeps losing points.</p></div><div class="card"><h3>All '+CC.length+' cases</h3>';
+  CC.forEach(function(c){var lg=S.ccs.filter(function(x){return x.id===c.id});
+   var best=lg.length?Math.max.apply(null,lg.map(function(x){return x.s})):null;
+   h+='<div class="item" data-id="'+c.id+'"><div class="sp"><span class="t">'+c.n+'</span><span class="pill" style="font-size:9.5px">'+c.lim+'m</span></div><div class="m">'+c.set+(best!==null?' · best <b style="color:'+(best>=75?'var(--g)':best>=55?'var(--w)':'var(--b)')+'">'+best+'%</b>':'')+'</div></div>'});
+  h+='</div>';document.getElementById('vs').innerHTML=h;
+  document.querySelectorAll('.item').forEach(function(el){el.onclick=function(){cc=CC.filter(function(x){return x.id===el.dataset.id})[0];chk={};tsec=cc.lim*60;trun=false;rCCS()}});
+  return}
+ var c=cc,score=sc(),arc='',lg='';
+ PH.forEach(function(p){arc+='<div style="width:'+((p.t-p.f)*100).toFixed(1)+'%;background:'+p.c+';opacity:.75"></div>';lg+='<span><i style="background:'+p.c+';display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:3px"></i>'+p.l+'</span>'});
+ var h='<div class="card"><div class="sp"><button class="btn g s" id="bk">‹ Cases</button><span class="pill t">'+c.set+' · '+c.lim+' min</span></div>'+
+ '<h2 style="margin:9px 0 5px">'+c.n+'</h2><p class="sm" style="color:#c3d0e8;margin:0 0 10px">'+c.p+'</p>'+
+ '<div class="arc" style="display:flex;height:8px;border-radius:5px;overflow:hidden">'+arc+'</div>'+
+ '<div style="position:relative;height:14px"><div id="mk" style="position:absolute;top:-4px;width:2px;height:22px;background:#fff;box-shadow:0 0 7px #fff;left:0%"></div></div>'+
+ '<div style="display:flex;flex-wrap:wrap;gap:6px;font-size:9.5px;color:var(--d)">'+lg+'</div><hr style="border:0;border-top:1px solid var(--l);margin:10px 0">'+
+ '<div class="sp"><div><div class="xs d">Case clock</div><div class="clk" id="ck">'+fc2(tsec)+'</div></div>'+
+ '<div style="text-align:right"><div class="xs d">Score</div><div class="clk" id="sco" style="color:'+sc2(score)+'">'+score+'<span style="font-size:18px">%</span></div></div></div>'+
+ '<div class="row" style="margin-top:9px"><button class="btn s" id="tg" style="flex:1">'+(trun?'Pause':'Start case')+'</button>'+
+ '<button class="btn g s" id="adv">+5 min</button><button class="btn g s" id="rst">Reset</button><button class="btn g s" id="log">Log</button></div>'+
+ '<div class="warn" id="tip" style="margin-top:9px">'+PH[0].h+'</div></div>';
+ PH.forEach(function(p,i){var st=0;for(var x=0;x<i;x++)st+=c[PH[x].k].length;
+  var on=c[p.k].filter(function(_,j){return chk[st+j]}).length;
+  h+='<div class="card"><div class="sp" style="margin-bottom:6px"><h3 style="margin:0;color:'+p.c+'">'+p.l+' <span style="color:var(--d2)">'+Math.round(p.w*100)+'% · '+on+'/'+c[p.k].length+'</span></h3></div>';
+  c[p.k].forEach(function(it,j){h+='<div class="chk'+(chk[st+j]?' on':'')+'" data-k="'+(st+j)+'"><u>✓</u><span>'+it+'</span></div>'});
+  h+='</div>'});
+ h+='<div class="card"><h3>Don\u2019t-miss points</h3><ul style="margin:0;padding-left:17px;font-size:13.3px;line-height:1.55">'+c.pl.map(function(p){return'<li style="margin-bottom:5px">'+p+'</li>'}).join('')+'</ul>'+
+ (S.ccs.filter(function(x){return x.id===c.id}).length?'<hr style="border:0;border-top:1px solid var(--l);margin:11px 0"><h3>Your attempts</h3>'+S.ccs.filter(function(x){return x.id===c.id}).map(function(x){return'<div class="kv"><span class="d">'+new Date(x.t).toLocaleDateString()+'</span><b style="color:'+sc2(x.s)+'">'+x.s+'%</b></div>'}).join(''):'')+'</div>';
+ document.getElementById('vs').innerHTML=h;
+ document.getElementById('bk').onclick=function(){cc=null;clearInterval(tid);rCCS()};
+ document.querySelectorAll('.chk').forEach(function(el){el.onclick=function(){var k=+el.dataset.k;chk[k]=!chk[k];el.classList.toggle('on',chk[k]);
+  var s=sc(),e=document.getElementById('sco');e.innerHTML=s+'<span style="font-size:18px">%</span>';e.style.color=sc2(s)}});
+ function clk(){var e=document.getElementById('ck');if(e)e.textContent=fc2(tsec);
+   var m=document.getElementById('mk');if(m)m.style.left=(Math.min(100,(1-tsec/(c.lim*60))*100)).toFixed(1)+'%';
+   if(tsec===c.lim*60)return;var fr=1-tsec/(c.lim*60),ph=PH.filter(function(p){return fr>=p.f&&fr<p.t})[0]||PH[4];
+   var t=document.getElementById('tip');if(t)t.innerHTML='<b style="color:'+ph.c+'">'+ph.l.toUpperCase()+'</b> — '+ph.h;
+   if(tsec<=0){clearInterval(tid);trun=false;var b=document.getElementById('tg');if(b)b.textContent='Time up'}}
+ clk();
+ document.getElementById('tg').onclick=function(){if(tsec<=0)return;trun=!trun;this.textContent=trun?'Pause':'Start case';clearInterval(tid);
+  if(trun)tid=setInterval(function(){tsec--;if(tsec<0)tsec=0;clk()},1000)};
+ document.getElementById('adv').onclick=function(){tsec=Math.max(0,tsec-300);clk()};
+ document.getElementById('rst').onclick=function(){chk={};clearInterval(tid);trun=false;tsec=c.lim*60;rCCS()};
+ document.getElementById('log').onclick=function(){var s=sc();S.ccs.push({id:c.id,s:s,t:Date.now()});save();
+  T('<b>Logged '+s+'%.</b> Score by pattern, not by number — which category kept losing points?')};
+}
+function sc(){if(!cc)return 0;var t=0;PH.forEach(function(p){var i0=PH.indexOf(p);var st=0;
+ for(var x=0;x<i0;x++)st+=cc[PH[x].k].length;
+ t+=p.w*(cc[p.k].filter(function(_,j){return chk[st+j]}).length/cc[p.k].length)});return Math.round(t*100)}
+function sc2(s){return s>=80?'var(--g)':s>=60?'var(--w)':'var(--b)'}
+function fc2(s){var m=Math.floor(s/60),x=s%60;return(m<10?'0':'')+m+':'+(x<10?'0':'')+x}
+
+function rInfo(){
+ var h='<div class="card '+(lok?'':'warn')+'">'+(lok?'<h3>Storage</h3><p class="sm d" style="margin:0">Progress is saving to this device automatically.</p>':'<h3>Storage blocked</h3><p class="sm" style="margin:0">This browser is not allowing local storage, so progress resets when you close the page. Use <b>Export</b> below and keep the text somewhere safe.</p>')+'</div>';
+ h+='<div class="card"><h3>Card data</h3><div class="row"><button class="btn g s" id="ex">Export</button><button class="btn g s" id="im">Import</button><button class="btn g s" id="rs">Reset progress</button></div><textarea id="tb" style="margin-top:9px;min-height:70px;background:#0b1425;border:1px solid var(--l);border-radius:10px;padding:10px;width:100%;font-size:11px" placeholder="Export writes here. Paste an export here, then press Import."></textarea><div class="xs d" id="m2" style="margin-top:6px"></div></div>';
+ h+='<div class="card"><h3>Install on your phone</h3><p class="sm d" style="margin:0 0 5px"><b>iPhone:</b> open this page in Safari, tap Share, then <b>Add to Home Screen</b>.</p><p class="sm d" style="margin:0 0 5px"><b>Android:</b> open it in Chrome, tap the ⋮ menu, then <b>Install app</b>.</p><p class="sm d" style="margin:0">After the first visit it works offline. Progress stays on each device, so use <b>Export</b> and <b>Import</b> to move it between devices.</p></div>';
+ h+='<div class="card"><h3>Content sources</h3><p class="sm d" style="margin:0 0 8px">Clinical content is built on these. Verify anything high-stakes against the primary source and your question bank.</p><div style="font-size:12.5px;line-height:1.5">'+
+ ['Hypertension · <b>2025 AHA/ACC</b> — goal &lt;130/80, PREVENT ≥7.5%, aldosteronism screening regardless of potassium',
+ 'Dyslipidemia · <b>2026 ACC/AHA</b> — LDL-C targets reintroduced, Lp(a) once in all adults, CAC Class 1',
+ 'Diabetes · <b>ADA 2026</b> — A1c &lt;7%, CGM targets, cardiorenal agents irrespective of A1c',
+ 'Hyperglycaemic crises · <b>2024 consensus</b> — fluids, insulin doses, the potassium rule',
+ 'Sepsis · <b>Surviving Sepsis Campaign 2026</b> — antibiotic timing, MAP 60–65 in older adults, crystalloid alone',
+ 'Stroke · <b>2026 AHA/ASA</b> — tenecteplase equal to alteplase, BP reversals after reperfusion',
+ 'Atrial fibrillation · <b>2023 ACC/AHA/ACCP/HRS</b> — risk-based anticoagulation, DOAC over warfarin',
+ 'Chronic kidney disease · <b>KDIGO 2024</b> — G/A grid, SGLT2i, finerenone, sick-day rules',
+ 'Acute pancreatitis · <b>IAP 2025</b> — moderate fluids, no antibiotic prophylaxis',
+ 'Asthma · <b>GINA 2026</b> — no SABA-only treatment, oxygen only if SpO₂ &lt;92%',
+ 'COPD · <b>GOLD 2026</b> — A/B/E categories, one moderate exacerbation now triggers escalation',
+ 'Pneumonia · <b>ATS 2025</b> — durations under 5 days for non-severe CAP',
+ 'Screening · <b>USPSTF</b> — breast from 40, colorectal from 45, lung 50–80 with ≥20 pack-years',
+ 'Prostate · <b>USPSTF and AUA/SUO 2026</b> — the two frameworks genuinely differ',
+ 'Immunisation · <b>CDC/ACIP</b> — check cdc.gov; the schedule has been in legal flux'].map(function(x){return '<div style="padding:6px 0;border-bottom:1px solid #1a2740">'+x+'</div>'}).join('')+'</div></div>';
+ h+='<div class="card"><h3>About</h3><p class="sm d" style="margin:0">'+CD.length+' flashcards across '+DECKS.length+' decks, including four dedicated biostatistics decks and decks for drug-ad and abstract interpretation and NBME reasoning patterns. Plus '+CC.length+' CCS cases. Guideline <b>numbers</b> come from the sources above; the flashcard phrasing and order sets are study aids, not authoritative text. Works fully offline — no network calls, no tracking.</p></div>';
+ document.getElementById('vs').innerHTML=h;
+ document.getElementById('ex').onclick=function(){var p={v:2,p:S.p,ccs:S.ccs,rev:S.rev},t2=JSON.stringify(p);
+  document.getElementById('tb').value=t2;try{if(navigator.clipboard)navigator.clipboard.writeText(t2).catch(function(){})}catch(e){}
+  document.getElementById('m2').innerHTML='<span style="color:var(--g)">Exported — also copied to your clipboard where permitted.</span>'};
+ document.getElementById('im').onclick=function(){try{var d=JSON.parse(document.getElementById('tb').value);
+  S.p=d.p||{};S.ccs=d.ccs||[];S.rev=d.rev||0;seen={};
+  (function(){for(var i=0;i<CD.length;i++){var o='k'+i;if(S.p[o]){if(!S.p[pk(i)])S.p[pk(i)]=S.p[o];delete S.p[o]}}})();save();document.getElementById('m2').innerHTML='<span style="color:var(--g)">Imported.</span>'}
+  catch(e){document.getElementById('m2').innerHTML='<span style="color:var(--b)">That is not valid JSON.</span>'}};
+ document.getElementById('rs').onclick=function(){S={p:{},ccs:[],rev:0};seen={};save();document.getElementById('m2').innerHTML='<span style="color:var(--w)">Progress reset.</span>'};
+}
+go('cards');
+if('serviceWorker' in navigator&&window.isSecureContext){navigator.serviceWorker.register('sw.js').catch(function(){})}
+</script>
+</body>
+</html>

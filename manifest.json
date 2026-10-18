@@ -1,0 +1,16 @@
+{
+  "name": "Step 3 Cards",
+  "short_name": "Step 3",
+  "description": "USMLE Step 3 flashcards and CCS case practice. Works offline.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#070c17",
+  "theme_color": "#070c17",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
