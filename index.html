@@ -94,6 +94,19 @@ function gs(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catc
 function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){lok=false;mem[k]=v}}
 var S=gs(LSK,{p:{},ccs:[],rev:0});if(!S.p)S.p={};if(!S.ccs)S.ccs=[];
 function save(){ss(LSK,S)}
+function pcode(){var j=JSON.stringify({v:3,p:S.p,ccs:S.ccs,rev:S.rev});return 'S3P:'+btoa(unescape(encodeURIComponent(j)))}
+function pread(t){t=String(t||'').trim();if(!t)return null;var d=null;
+ try{if(t.indexOf('S3P:')===0)d=JSON.parse(decodeURIComponent(escape(atob(t.slice(4).replace(/\s+/g,'')))));else d=JSON.parse(t)}catch(e){return null}
+ return d&&typeof d==='object'&&d.p&&typeof d.p==='object'?d:null}
+function pbetter(a,b){if((a.r||0)!==(b.r||0))return(a.r||0)>(b.r||0);if((a.t||0)!==(b.t||0))return(a.t||0)>(b.t||0);return(a.due||0)>(b.due||0)}
+function pmerge(d){var n={add:0,up:0,ccs:0};
+ for(var k in d.p){if(!Object.prototype.hasOwnProperty.call(d.p,k))continue;var x=d.p[k];if(!x||typeof x!=='object')continue;
+  var m=/^k(\d+)$/.exec(k);if(m&&CD[+m[1]])k=pk(+m[1]);
+  if(!S.p[k]){S.p[k]=x;n.add++}else if(pbetter(x,S.p[k])){S.p[k]=x;n.up++}}
+ var have={};S.ccs.forEach(function(c){have[c.id+'@'+c.t]=1});
+ (d.ccs||[]).forEach(function(c){if(c&&c.id&&!have[c.id+'@'+c.t]){S.ccs.push(c);have[c.id+'@'+c.t]=1;n.ccs++}});
+ S.ccs.sort(function(a,b){return a.t-b.t});
+ var tot=0;for(var q in S.p)tot+=S.p[q].r||0;S.rev=Math.max(S.rev||0,d.rev||0,tot);save();return n}
 function T(m){var t=document.getElementById('tst');t.innerHTML=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(function(){t.style.display='none'},3400)}
 function E(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
@@ -949,7 +962,7 @@ function pk(i){return CD[i].d+'|'+CD[i].q}
 (function(){var ch=false;for(var i=0;i<CD.length;i++){var o='k'+i;if(S.p[o]){if(!S.p[pk(i)])S.p[pk(i)]=S.p[o];delete S.p[o];ch=true}}if(ch)save()})();
 function gp(i){if(!S.p[pk(i)])S.p[pk(i)]={iv:0,e:2.5,due:0,r:0,l:0};return S.p[pk(i)]}
 function due(i){var p=S.p[pk(i)];return!p||p.due<=Date.now()}
-function grade(i,g){var p=gp(i);p.r++;S.rev++;
+function grade(i,g){var p=gp(i);p.r++;p.t=Date.now();S.rev++;
  if(g===0){p.l++;p.e=Math.max(1.3,p.e-.2);p.iv=0;p.due=Date.now()+6e4}
  else if(g===1){p.e=Math.max(1.3,p.e-.15);p.iv=Math.max(1,Math.round(p.iv*1.2)||1);p.due=Date.now()+p.iv*DAY}
  else if(g===2){p.iv=p.iv===0?1:Math.round(p.iv*p.e);p.due=Date.now()+p.iv*DAY}
@@ -957,7 +970,7 @@ function grade(i,g){var p=gp(i);p.r++;S.rev++;
  save()}
 
 var V='cards',df=-1,mode='due',cur=null,cc=null,chk={},tsec=0,tid=null,trun=false,seen={},rt=null;
-function hdr(){var m={cards:['Cards','Tap to flip, then grade honestly.'],ccs:['CCS Cases','13–14 simulations close Day 2, capped at 10 or 20 minutes each.'],info:['Info','Install, export, and sources.']}[V];
+function hdr(){var m={cards:['Cards','Tap to flip, then grade honestly.'],ccs:['CCS Cases','13–14 simulations close Day 2, capped at 10 or 20 minutes each.'],info:['Info','Install, move progress, and sources.']}[V];
 document.getElementById('top').innerHTML='<h1>'+m[0]+'</h1><div class="s">'+m[1]+'</div>'}
 function go(v){V=v;document.querySelectorAll('.nav b').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)});
 document.getElementById('vs').innerHTML='';hdr();window.scrollTo(0,0);
@@ -1065,9 +1078,9 @@ function sc2(s){return s>=80?'var(--g)':s>=60?'var(--w)':'var(--b)'}
 function fc2(s){var m=Math.floor(s/60),x=s%60;return(m<10?'0':'')+m+':'+(x<10?'0':'')+x}
 
 function rInfo(){
- var h='<div class="card '+(lok?'':'warn')+'">'+(lok?'<h3>Storage</h3><p class="sm d" style="margin:0">Progress is saving to this device automatically.</p>':'<h3>Storage blocked</h3><p class="sm" style="margin:0">This browser is not allowing local storage, so progress resets when you close the page. Use <b>Export</b> below and keep the text somewhere safe.</p>')+'</div>';
- h+='<div class="card"><h3>Card data</h3><div class="row"><button class="btn g s" id="ex">Export</button><button class="btn g s" id="im">Import</button><button class="btn g s" id="rs">Reset progress</button></div><textarea id="tb" style="margin-top:9px;min-height:70px;background:#0b1425;border:1px solid var(--l);border-radius:10px;padding:10px;width:100%;font-size:11px" placeholder="Export writes here. Paste an export here, then press Import."></textarea><div class="xs d" id="m2" style="margin-top:6px"></div></div>';
- h+='<div class="card"><h3>Install on your phone</h3><p class="sm d" style="margin:0 0 5px"><b>iPhone:</b> open this page in Safari, tap Share, then <b>Add to Home Screen</b>.</p><p class="sm d" style="margin:0 0 5px"><b>Android:</b> open it in Chrome, tap the ⋮ menu, then <b>Install app</b>.</p><p class="sm d" style="margin:0">After the first visit it works offline. Progress stays on each device, so use <b>Export</b> and <b>Import</b> to move it between devices.</p></div>';
+ var h='<div class="card '+(lok?'':'warn')+'">'+(lok?'<h3>Storage</h3><p class="sm d" style="margin:0">Progress is saving to this device automatically.</p>':'<h3>Storage blocked</h3><p class="sm" style="margin:0">This browser is not allowing local storage, so progress resets when you close the page. Use <b>Copy code</b> below and keep the code somewhere safe.</p>')+'</div>';
+ h+='<div class="card"><h3>Move progress between devices</h3><p class="sm d" style="margin:0 0 9px">Each device keeps its own progress. To bring them together: on the first device tap <b>Copy code</b> (or <b>Save file</b>), then on the other device paste it below and tap <b>Merge in</b>. Nothing is lost: for each card the more-reviewed copy is kept. Do it both ways to match them up.</p><div class="row"><button class="btn s" id="ex">Copy code</button><button class="btn g s" id="sf">Save file</button><button class="btn g s" id="lf">Load file</button><input type="file" id="fi" accept=".json,.txt,application/json,text/plain" style="display:none"></div><textarea id="tb" style="margin-top:9px;min-height:70px;background:#0b1425;border:1px solid var(--l);border-radius:10px;padding:10px;width:100%;font-size:11px;color:var(--t)" placeholder="Paste a progress code from your other device here."></textarea><div class="row" style="margin-top:8px"><button class="btn s" id="im">Merge in</button><button class="btn g s" id="rs">Reset progress</button></div><div class="xs d" id="m2" style="margin-top:6px"></div></div>';
+ h+='<div class="card"><h3>Install on your phone</h3><p class="sm d" style="margin:0 0 5px"><b>iPhone:</b> open this page in Safari, tap Share, then <b>Add to Home Screen</b>.</p><p class="sm d" style="margin:0 0 5px"><b>Android:</b> open it in Chrome, tap the ⋮ menu, then <b>Install app</b>.</p><p class="sm d" style="margin:0">After the first visit it works offline. Progress stays on each device; use <b>Move progress between devices</b> above to bring your phone and laptop together.</p></div>';
  h+='<div class="card"><h3>Content sources</h3><p class="sm d" style="margin:0 0 8px">Clinical content is built on these. Verify anything high-stakes against the primary source and your question bank.</p><div style="font-size:12.5px;line-height:1.5">'+
  ['Hypertension · <b>2025 AHA/ACC</b> — goal &lt;130/80, PREVENT ≥7.5%, aldosteronism screening regardless of potassium',
  'Dyslipidemia · <b>2026 ACC/AHA</b> — LDL-C targets reintroduced, Lp(a) once in all adults, CAC Class 1',
@@ -1086,14 +1099,22 @@ function rInfo(){
  'Immunisation · <b>CDC/ACIP</b> — check cdc.gov; the schedule has been in legal flux'].map(function(x){return '<div style="padding:6px 0;border-bottom:1px solid #1a2740">'+x+'</div>'}).join('')+'</div></div>';
  h+='<div class="card"><h3>About</h3><p class="sm d" style="margin:0">'+CD.length+' flashcards across '+DECKS.length+' decks, including four dedicated biostatistics decks and decks for drug-ad and abstract interpretation and NBME reasoning patterns. Plus '+CC.length+' CCS cases. Guideline <b>numbers</b> come from the sources above; the flashcard phrasing and order sets are study aids, not authoritative text. Works fully offline — no network calls, no tracking.</p></div>';
  document.getElementById('vs').innerHTML=h;
- document.getElementById('ex').onclick=function(){var p={v:2,p:S.p,ccs:S.ccs,rev:S.rev},t2=JSON.stringify(p);
-  document.getElementById('tb').value=t2;try{if(navigator.clipboard)navigator.clipboard.writeText(t2).catch(function(){})}catch(e){}
-  document.getElementById('m2').innerHTML='<span style="color:var(--g)">Exported — also copied to your clipboard where permitted.</span>'};
- document.getElementById('im').onclick=function(){try{var d=JSON.parse(document.getElementById('tb').value);
-  S.p=d.p||{};S.ccs=d.ccs||[];S.rev=d.rev||0;seen={};
-  (function(){for(var i=0;i<CD.length;i++){var o='k'+i;if(S.p[o]){if(!S.p[pk(i)])S.p[pk(i)]=S.p[o];delete S.p[o]}}})();save();document.getElementById('m2').innerHTML='<span style="color:var(--g)">Imported.</span>'}
-  catch(e){document.getElementById('m2').innerHTML='<span style="color:var(--b)">That is not valid JSON.</span>'}};
- document.getElementById('rs').onclick=function(){S={p:{},ccs:[],rev:0};seen={};save();document.getElementById('m2').innerHTML='<span style="color:var(--w)">Progress reset.</span>'};
+ function msg(t,c){document.getElementById('m2').innerHTML='<span style="color:var(--'+c+')">'+t+'</span>'}
+ document.getElementById('ex').onclick=function(){var t2=pcode();document.getElementById('tb').value=t2;
+  function ok(){msg('Code copied. Paste it into the app on your other device.','g')}
+  function no(){var tb=document.getElementById('tb');tb.focus();tb.select();msg('Code is in the box. Select it all and copy it.','w')}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t2).then(ok,no);else no()}catch(e){no()}};
+ document.getElementById('sf').onclick=function(){var t2=pcode(),n='step3-progress-'+new Date().toISOString().slice(0,10)+'.txt';
+  try{var fl=new File([t2],n,{type:'text/plain'});if(navigator.canShare&&navigator.canShare({files:[fl]})){navigator.share({files:[fl],title:'Step 3 progress'}).then(function(){msg('File shared.','g')},function(){});return}}catch(e){}
+  var u=URL.createObjectURL(new Blob([t2],{type:'text/plain'})),l=document.createElement('a');l.href=u;l.download=n;document.body.appendChild(l);l.click();l.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);msg('File saved: '+n,'g')};
+ document.getElementById('lf').onclick=function(){document.getElementById('fi').click()};
+ document.getElementById('fi').onchange=function(){var fl=this.files&&this.files[0];if(!fl)return;var r=new FileReader();
+  r.onload=function(){document.getElementById('tb').value=String(r.result);doMerge()};r.readAsText(fl);this.value=''};
+ function doMerge(){var d=pread(document.getElementById('tb').value);
+  if(!d){msg('That does not look like a progress code. Copy it again from the other device.','b');return}
+  var n=pmerge(d);seen={};msg('Merged. '+n.add+' new card'+(n.add===1?'':'s')+', '+n.up+' updated from the other device'+(n.ccs?', '+n.ccs+' CCS attempt'+(n.ccs===1?'':'s')+' added':'')+'.','g');document.getElementById('tb').value=''}
+ document.getElementById('im').onclick=doMerge;
+ document.getElementById('rs').onclick=function(){if(!confirm('Erase all progress on this device? This cannot be undone.'))return;S={p:{},ccs:[],rev:0};seen={};save();document.getElementById('m2').innerHTML='<span style="color:var(--w)">Progress reset.</span>'};
 }
 go('cards');
 if('serviceWorker' in navigator&&window.isSecureContext){navigator.serviceWorker.register('sw.js').catch(function(){})}
