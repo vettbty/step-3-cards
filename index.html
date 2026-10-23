@@ -1385,59 +1385,76 @@ function grade(i,g){var p=gp(i);p.r++;p.t=Date.now();S.rev++;
  save()}
 
 var V='cards',df=-1,mode='due',cur=null,cc=null,chk={},tsec=0,tid=null,trun=false,seen={},rt=null;
-function hdr(){var m={cards:['Cards','Tap to flip, then grade honestly.'],ccs:['CCS Cases','13–14 simulations close Day 2, capped at 10 or 20 minutes each.'],info:['Info','Install, move progress, and sources.']}[V];
+function hdr(){var m={cards:['Cards','Tap to flip, then grade. Reviewed cards drop off the count.'],ccs:['CCS Cases','13–14 simulations close Day 2, capped at 10 or 20 minutes each.'],info:['Info','Install, move progress, and sources.']}[V];
 document.getElementById('top').innerHTML='<h1>'+m[0]+'</h1><div class="s">'+m[1]+'</div>'}
 function go(v){V=v;document.querySelectorAll('.nav b').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)});
 document.getElementById('vs').innerHTML='';hdr();window.scrollTo(0,0);
 if(v==='cards')rCards();if(v==='ccs')rCCS();if(v==='info')rInfo()}
 document.querySelectorAll('.nav b').forEach(function(b){b.onclick=function(){go(b.dataset.v)}});
 
+function rvd(i){var p=S.p[pk(i)];return!!(p&&p.r>0)}
+function inD(i){return df<0||CD[i].d===DECKS[df]}
 function queue(){var q=[];
- for(var i=0;i<CD.length;i++){if(df>=0&&CD[i].d!==DECKS[df])continue;
-  if(mode==='due'&&!due(i))continue;if(mode==='all'&&seen[i])continue;q.push(i)}
- if(mode==='all')return q;
+ for(var i=0;i<CD.length;i++){if(!inD(i))continue;
+  if(mode==='due'&&!due(i))continue;if(mode==='new'&&rvd(i))continue;
+  if(mode==='rev'&&!rvd(i))continue;if((mode==='all'||mode==='rev')&&seen[i])continue;q.push(i)}
+ if(mode==='all'||mode==='new')return q;
  q.sort(function(a,b){var pa=S.p[pk(a)]||{l:0,iv:0},pb=S.p[pk(b)]||{l:0,iv:0};
   if((pb.l||0)!==(pa.l||0))return(pb.l||0)-(pa.l||0);return(pa.iv||0)-(pb.iv||0)});
  return q}
 function rCards(){
- var q=queue(),dc=0,ms=0;
- for(var i=0;i<CD.length;i++){if(df>=0&&CD[i].d!==DECKS[df])continue;
-  var p=S.p[pk(i)];if(p&&p.iv>=21)ms++;if(due(i))dc++}
- var h='<div class="tiles"><div class="tile"><div class="l">Due</div><div class="n">'+dc+'</div></div>'+
- '<div class="tile"><div class="l">Reviews</div><div class="n">'+(S.rev||0)+'</div></div>'+
- '<div class="tile"><div class="l">Mastered</div><div class="n">'+ms+'</div></div></div>';
+ var q=queue(),tot=0,rc=0,dc=0,ms=0,now=Date.now();
+ for(var i=0;i<CD.length;i++){if(!inD(i))continue;tot++;
+  var p=S.p[pk(i)];if(p&&p.r>0){rc++;if(p.due<=now)dc++;if(p.iv>=21)ms++}}
+ var left=tot-rc,pct=tot?Math.round(rc/tot*100):0;
+ var h='<div class="tiles"><div class="tile"><div class="l">Left to study</div><div class="n">'+left+'</div></div>'+
+ '<div class="tile"><div class="l">Reviewed</div><div class="n">'+rc+'<span class="d" style="font-size:12px;font-weight:650"> / '+tot+'</span></div></div>'+
+ '<div class="tile"><div class="l">Due again</div><div class="n">'+dc+'</div></div></div>';
  h+='<div class="card"><div class="row"><select id="fd" style="flex:2">'+
- '<option value="-1">All decks ('+CD.length+' cards)</option>'+
- DECKS.map(function(d,ix){var n=CD.filter(function(c){return c.d===d}).length;
-  return '<option value="'+ix+'"'+(df===ix?' selected':'')+'>'+d+' ('+n+')</option>'}).join('')+
- '</select><select id="fm" style="flex:1"><option value="due"'+(mode==='due'?' selected':'')+'>Due</option>'+
- '<option value="all"'+(mode==='all'?' selected':'')+'>All</option></select></div></div>';
+ '<option value="-1">All decks ('+(CD.length-CD.filter(function(c,ix){return rvd(ix)}).length)+' left)</option>'+
+ DECKS.map(function(d,ix){var n=0,r=0;CD.forEach(function(c,j){if(c.d===d){n++;if(rvd(j))r++}});
+  return '<option value="'+ix+'"'+(df===ix?' selected':'')+'>'+(r===n?'✓ '+d+' (done)':d+' ('+(n-r)+' left)')+'</option>'}).join('')+
+ '</select><select id="fm" style="flex:1">'+
+ [['due','Study'],['new','New only'],['rev','Re-review'],['all','All']].map(function(o){return '<option value="'+o[0]+'"'+(mode===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+
+ '</select></div>'+
+ '<div class="bar" style="margin-top:10px"><i style="width:'+pct+'%"></i></div>'+
+ '<div class="sp xs d" style="margin-top:5px"><span>'+pct+'% reviewed · '+ms+' mastered · '+(S.rev||0)+' total reviews</span>'+
+ (rc?'<button class="btn g s" id="rd" style="padding:4px 9px;font-size:11px">Reset '+(df<0?'all':'deck')+'</button>':'')+'</div></div>';
  clearTimeout(rt);
  cur=null;
- if(!q.length){if(mode==='all'){h+='<div class="card"><p style="color:var(--g);margin:0 0 5px;font-weight:650">You went through every card in this deck.</p>'+
- '<button class="btn g s" id="ag">Go through again</button></div>'}else{var nx=Infinity,nc=0;
-  for(var j=0;j<CD.length;j++){if(df>=0&&CD[j].d!==DECKS[df])continue;var pp=S.p[pk(j)];if(pp&&pp.due-Date.now()<36e5){nc++;nx=Math.min(nx,pp.due)}}
-  h+='<div class="card"><p style="color:var(--g);margin:0 0 5px;font-weight:650">Queue clear.</p>'+
+ var rr=rc&&mode!=='rev'?'<button class="btn g s" id="rv" style="margin-top:6px">Re-review the '+rc+' reviewed card'+(rc>1?'s':'')+'</button>':'';
+ if(!q.length){
+  if(mode==='all'||mode==='rev'){h+='<div class="card"><p style="color:var(--g);margin:0 0 5px;font-weight:650">'+(mode==='rev'&&!rc?'No reviewed cards here yet.':'You went through every '+(mode==='rev'?'reviewed ':'')+'card in this deck.')+'</p>'+
+   (mode==='rev'&&!rc?'':'<button class="btn g s" id="ag">Go through again</button>')+'</div>'}
+  else if(mode==='new'){h+='<div class="card"><p style="color:var(--g);margin:0 0 5px;font-weight:650">Every card here has been reviewed.</p>'+
+   '<p class="sm d" style="margin:0">Pick <b>Re-review</b> to go through them again, or <b>Reset</b> to start this deck fresh.</p>'+rr+'</div>'}
+  else{var nx=Infinity,nc=0;
+  for(var j=0;j<CD.length;j++){if(!inD(j))continue;var pp=S.p[pk(j)];if(pp&&pp.due-Date.now()<36e5){nc++;nx=Math.min(nx,pp.due)}}
+  h+='<div class="card"><p style="color:var(--g);margin:0 0 5px;font-weight:650">Queue clear. All '+tot+' cards reviewed.</p>'+
   (nc?'<p class="sm d" style="margin:0 0 5px">'+nc+' card'+(nc>1?'s':'')+' you marked <b>Again</b> will come back in about '+Math.max(1,Math.ceil((nx-Date.now())/6e4))+' min.</p>':'')+
-  '<p class="sm d" style="margin:0">Switch to <b>All</b> to browse every card in this deck.</p></div>';
+  '<p class="sm d" style="margin:0">Reviewed cards come back here when they are due again. To go over them now, use Re-review.</p>'+rr+'</div>';
   if(nc)rt=setTimeout(function(){if(V==='cards')rCards()},Math.max(1000,nx-Date.now()+500))}}
- else{cur=q[0];var c=CD[cur];
-  h+='<div class="fw"><div class="fc" id="fc"><div class="fa"><div class="pill t">'+c.d+'</div>'+
+ else{cur=q[0];var c=CD[cur],cp=S.p[pk(cur)],st=cp&&cp.r>0?'<span class="pill" style="margin-left:5px">✓ Reviewed'+(cp.r>1?' '+cp.r+'×':'')+'</span>':'<span class="pill" style="margin-left:5px">New</span>';
+  h+='<div class="fw"><div class="fc" id="fc"><div class="fa"><div><span class="pill t">'+c.d+'</span>'+st+'</div>'+
   '<div class="q" style="margin-top:10px">'+c.q+'</div><div class="h">tap to flip</div></div>'+
-  '<div class="fa b"><div class="pill t">'+c.d+'</div><div class="a" style="margin-top:10px">'+c.a+'</div>'+
+  '<div class="fa b"><div><span class="pill t">'+c.d+'</span>'+st+'</div><div class="a" style="margin-top:10px">'+c.a+'</div>'+
   '<div class="h">'+E(c.q)+'</div></div></div></div>'+
   '<div class="g4" id="gr" style="display:none">'+
   '<button data-g="0">Again<em>reset</em></button><button data-g="1">Hard<em>slow</em></button>'+
   '<button data-g="2">Got it<em>normal</em></button><button data-g="3">Easy<em>fast</em></button></div>'+
-  '<p class="xs d" style="text-align:center;margin:8px 0 0">'+q.length+' card'+(q.length>1?'s':'')+' in this queue</p>'}
+  '<p class="xs d" style="text-align:center;margin:8px 0 0">'+q.length+' card'+(q.length>1?'s':'')+' in this queue'+(mode==='rev'?' (re-review)':'')+'</p>'}
  document.getElementById('vs').innerHTML=h;
  var fd=document.getElementById('fd');if(fd)fd.onchange=function(){df=+fd.value;seen={};rCards()};
  var fm=document.getElementById('fm');if(fm)fm.onchange=function(){mode=fm.value;seen={};rCards()};
  var ag=document.getElementById('ag');if(ag)ag.onclick=function(){seen={};rCards()};
+ var rv=document.getElementById('rv');if(rv)rv.onclick=function(){mode='rev';seen={};rCards()};
+ var rd=document.getElementById('rd');if(rd)rd.onclick=function(){
+  if(!confirm('Mark all '+rc+' reviewed card'+(rc>1?'s':'')+' in '+(df<0?'every deck':DECKS[df])+' as new again? Their review history will be cleared.'))return;
+  for(var k=0;k<CD.length;k++)if(inD(k))delete S.p[pk(k)];save();seen={};mode='due';rCards();T('<b>Reset.</b> '+(df<0?'All cards are':DECKS[df]+' is')+' back to new.')};
  var fc=document.getElementById('fc');if(fc)fc.onclick=function(){fc.classList.add('fl');document.getElementById('gr').style.display='grid'};
  document.querySelectorAll('#gr button').forEach(function(b){b.onclick=function(){doGrade(+b.dataset.g)}});
 }
-function doGrade(g){if(cur===null)return;grade(cur,g);if(mode==='all')seen[cur]=true;rCards()}
+function doGrade(g){if(cur===null)return;grade(cur,g);if(mode==='all'||mode==='rev')seen[cur]=true;rCards()}
 document.addEventListener('keydown',function(e){if(V!=='cards'||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;var fc=document.getElementById('fc');if(!fc)return;
  if((e.key===' '||e.key==='Enter')&&!fc.classList.contains('fl')){e.preventDefault();fc.click()}
  else if(fc.classList.contains('fl')&&/^[1-4]$/.test(e.key)){doGrade(+e.key-1)}});
